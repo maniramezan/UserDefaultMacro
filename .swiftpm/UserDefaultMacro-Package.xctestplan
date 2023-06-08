@@ -1,0 +1,32 @@
+{
+  "configurations" : [
+    {
+      "id" : "A72500C5-5E22-44D3-8A76-89FD4AC88FD7",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:",
+      "identifier" : "UserDefaultClient",
+      "name" : "UserDefaultClient"
+    },
+    "testExecutionOrdering" : "random",
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "UserDefaultTests",
+        "name" : "UserDefaultTests"
+      }
+    }
+  ],
+  "version" : 1
+}

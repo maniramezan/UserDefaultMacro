@@ -157,7 +157,7 @@ If you have any idea to improve this repo, please feel free to fork and send a p
 
 ### License
 
-This repo is licensed under MIT license. See [LICENSE]([LICENSE](https://github.com/maniramezan/main/LICENSE)) for more info.
+This repo is licensed under MIT license. See [LICENSE](https://github.com/maniramezan/UserDefaultMacro/blob/main/LICENSE) for more info.
 
 ### References
 

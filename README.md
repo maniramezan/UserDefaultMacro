@@ -119,6 +119,7 @@ struct UserDefaultsStore {
         self.userDefaults = userDefaults
         userDefaults.register(defaults: ["isInitialLaunch": true])
     }
+}
 ```
 
 Notice how adding `defaultValue` also modifies the `init(userDefaults:)` method to register default values for the entity.
@@ -128,6 +129,10 @@ Notice how adding `defaultValue` also modifies the `init(userDefaults:)` method 
 This macro is less recommended and might be removed in future versions depending on feedback. This is very similar to `@UserDefaultRecord` macro, but it can be used standalone. You can pass `UserDefaults`, `key` and `defaultValue` to customize the generated computational property or simply use it without any arguments:
 
 ```swift
+extension UserDefaults {
+    static let test = UserDefaults(suiteName: "test")!
+}
+
 struct SomeEntity {
     static let key = "customized_key"
     @UserDefaultProperty(using: .test, key: Self.key, defaultValue: "Some default value")

@@ -11,11 +11,13 @@ jobs:
   build:
     runs-on: macos-13
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: swift-actions/setup-swift@150267bf6ba01f9d942a4bd55aa2f35ba586767d
       with:
         swift-version: "5.9.0"
-    - name: Build
+    - name: Build code
       run: swift build -v
     - name: Run tests
       run: swift test -v
+    - name: Build DocC
+      run: ./build-docc.sh

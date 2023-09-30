@@ -18,6 +18,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Swift 5.9
+        uses: swift-actions/setup-swift@150267bf6ba01f9d942a4bd55aa2f35ba586767d
+        with:
+          swift-version: "5.9.0"
       - name: Run Build Docs
         run: ./build-docc.sh
       - name: Setup Pages

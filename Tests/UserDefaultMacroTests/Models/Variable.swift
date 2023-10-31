@@ -34,7 +34,7 @@ struct Variable: CustomStringConvertible {
     // MARK: - CustomStringConvertible
 
     var description: String {
-        description(skipNewlineIndentations: false)
+        declaration()
     }
 
     var declarationKeyword: String {
@@ -51,8 +51,7 @@ struct Variable: CustomStringConvertible {
         return false
     }
 
-    func description(
-        skipNewlineIndentations: Bool = false,
+    func declaration(
         currentIndent: Trivia = .spaces(0),
         extraAttribute: SwiftAttribute? = nil
     ) -> String {
@@ -61,15 +60,8 @@ struct Variable: CustomStringConvertible {
             .map { attribute in
                 "\(attribute.description)\n\(currentIndent.description)"
             }.joined()
-
-        let bodyString: String
-        if skipNewlineIndentations {
-            bodyString = body.replacingOccurrences(of: Trivia.spaces(4).description, with: "")
-        } else {
-            bodyString = body
-        }
         
-        return "\(attributeString)\(declarationKeyword) \(name): \(type.swiftType)\(initializer)\(bodyString)"
+        return "\(attributeString)\(declarationKeyword) \(name): \(type.swiftType)\(initializer)\(body)"
     }
 
     // MARK: - Private members

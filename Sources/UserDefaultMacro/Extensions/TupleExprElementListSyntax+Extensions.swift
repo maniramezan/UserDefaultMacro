@@ -1,13 +1,13 @@
 import Foundation
 import SwiftSyntax
 
-extension TupleExprElementListSyntax {
+extension LabeledExprListSyntax {
     private static let userDefaultsParamLabel = "using"
     private static let keyParamLabel = "key"
     private static let defaultValueLabel = "defaultValue"
     private static let accessLevelLabel = "accessLevel"
 
-    func tupleExprElementSyntaxLabeled(_ label: String) -> TupleExprElementSyntax? {
+    func tupleExprElementSyntaxLabeled(_ label: String) -> LabeledExprSyntax? {
         first { $0.label?.text == label }
     }
 

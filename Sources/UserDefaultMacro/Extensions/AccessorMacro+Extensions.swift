@@ -12,12 +12,12 @@ extension AccessorMacro {
     ) throws -> [AccessorDeclSyntax] {
         guard
             let variableDeclSyntax = declaration.as(VariableDeclSyntax.self),
-            variableDeclSyntax.bindingKeyword.tokenKind == .keyword(.var)
+            variableDeclSyntax.bindingSpecifier.tokenKind == .keyword(.var)
         else {
             throw UserDefaultMacroError.immutableVariable
         }
 
-        let tupleExprElementListSyntax = node.argument?.as(TupleExprElementListSyntax.self)
+        let tupleExprElementListSyntax = node.arguments?.as(LabeledExprListSyntax.self)
         let userDefinedKey = tupleExprElementListSyntax?.extractKeyParam()
         let defaultValue = tupleExprElementListSyntax?.extractDefaultValueParam()
         let userDefaultsString: String
@@ -81,7 +81,7 @@ extension AccessorMacro {
             return .optional(wrappedType: wrappedType)
         }
 
-        if let simpleTypeIdentifierSyntax = typeSyntax.as(SimpleTypeIdentifierSyntax.self) {
+        if let simpleTypeIdentifierSyntax = typeSyntax.as(IdentifierTypeSyntax.self) {
             guard case .identifier(let typeName) = simpleTypeIdentifierSyntax.name.tokenKind else {
                 throw UserDefaultMacroError.failedRetrieveVariableTypeName(typeSyntaxDescription: typeSyntax.debugDescription)
             }
@@ -89,13 +89,13 @@ extension AccessorMacro {
         }
 
         if let dictionaryTypeSyntax = typeSyntax.as(DictionaryTypeSyntax.self) {
-            let keyType = try parseTypeSyntax(dictionaryTypeSyntax.keyType)
-            let valueType = try parseTypeSyntax(dictionaryTypeSyntax.valueType)
+            let keyType = try parseTypeSyntax(dictionaryTypeSyntax.key)
+            let valueType = try parseTypeSyntax(dictionaryTypeSyntax.value)
             return .dictionary(keyType: keyType, valueType: valueType)
         }
 
         if let arrayTypeSyntax = typeSyntax.as(ArrayTypeSyntax.self) {
-            let elementTypeName = try parseTypeSyntax(arrayTypeSyntax.elementType)
+            let elementTypeName = try parseTypeSyntax(arrayTypeSyntax.element)
             return .array(elementType: elementTypeName)
         }
 

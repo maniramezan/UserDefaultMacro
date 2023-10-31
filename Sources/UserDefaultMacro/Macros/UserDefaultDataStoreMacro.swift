@@ -11,15 +11,15 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
         of node: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
-      ) throws -> [DeclSyntax] {
-          guard let attributeSyntax = declaration.attributes.attributeSyntax(named: attributeName) else {
+    ) throws -> [DeclSyntax] {
+        guard let attributeSyntax = declaration.attributes.attributeSyntax(named: attributeName) else {
             throw UserDefaultMacroError.noAttributeFound(
                 attributeName: attributeName,
                 modelDescription: declaration.debugDescription)
         }
 
-          let tupleExprElementListSyntax = attributeSyntax.arguments?.as(LabeledExprListSyntax.self)
-          let userDefaultsString = tupleExprElementListSyntax?.extractUserDefaultsParam(canReturnShortenVersion: true) ?? UserDefaults.standardName.description
+        let tupleExprElementListSyntax = attributeSyntax.arguments?.as(LabeledExprListSyntax.self)
+        let userDefaultsString = tupleExprElementListSyntax?.extractUserDefaultsParam(canReturnShortenVersion: true) ?? UserDefaults.standardName.description
 
         let mutableVariableDeclSyntaxes = declaration.memberBlock.members
             .compactMap { member in
@@ -72,10 +72,10 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
     }
 
     public static func expansion(
-      of node: AttributeSyntax,
-      attachedTo declaration: some DeclGroupSyntax,
-      providingAttributesFor member: some DeclSyntaxProtocol,
-      in context: some MacroExpansionContext
+        of node: AttributeSyntax,
+        attachedTo declaration: some DeclGroupSyntax,
+        providingAttributesFor member: some DeclSyntaxProtocol,
+        in context: some MacroExpansionContext
     ) throws -> [AttributeSyntax] {
         guard
             let variableDeclSyntax = member.as(VariableDeclSyntax.self),
@@ -90,7 +90,7 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
         else {
             return []
         }
-
+        
         guard
             variableDeclSyntax.bindings.count == 1,
             !variableDeclSyntax.bindings

@@ -90,7 +90,7 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
         else {
             return []
         }
-        
+
         guard
             variableDeclSyntax.bindings.count == 1,
             !variableDeclSyntax.bindings

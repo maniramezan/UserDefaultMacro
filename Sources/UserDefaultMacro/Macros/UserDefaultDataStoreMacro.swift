@@ -18,8 +18,8 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
                 modelDescription: declaration.debugDescription)
         }
 
-        let tupleExprElementListSyntax = attributeSyntax.arguments?.as(LabeledExprListSyntax.self)
-        let userDefaultsString = tupleExprElementListSyntax?.extractUserDefaultsParam(canReturnShortenVersion: true) ?? UserDefaults.standardName.description
+        let labeledExprElementListSyntax = attributeSyntax.arguments?.as(LabeledExprListSyntax.self)
+        let userDefaultsString = labeledExprElementListSyntax?.extractUserDefaultsParam(canReturnShortenVersion: true) ?? UserDefaults.standardName.description
 
         let mutableVariableDeclSyntaxes = declaration.memberBlock.members
             .compactMap { member in
@@ -36,13 +36,13 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
                 let variableIdentifierSyntax = variableDeclSyntax.bindings
                     .compactMap({ patternBindingSyntax in patternBindingSyntax.pattern.as(IdentifierPatternSyntax.self) })
                     .first,
-                let tupleExprElementListSyntax = attributeSyntax?.arguments?.as(LabeledExprListSyntax.self),
-                let defaultValue = tupleExprElementListSyntax.extractDefaultValueParam()
+                let labeledExprElementListSyntax = attributeSyntax?.arguments?.as(LabeledExprListSyntax.self),
+                let defaultValue = labeledExprElementListSyntax.extractDefaultValueParam()
             else {
                 return nil
             }
 
-            let key = tupleExprElementListSyntax.extractKeyParam() ?? variableIdentifierSyntax.identifier.text.withDoubleQuotes
+            let key = labeledExprElementListSyntax.extractKeyParam() ?? variableIdentifierSyntax.identifier.text.withDoubleQuotes
 
             return (
                 "\(key)",
@@ -50,7 +50,7 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
             )
         }
 
-        let accessLevel = tupleExprElementListSyntax?.extractAccessLevelParam() ?? .internal
+        let accessLevel = labeledExprElementListSyntax?.extractAccessLevelParam() ?? .internal
 
         let variableDefaultValues = attributedVariables.map { (variableName, defaultValue) in
             "\(variableName): \(defaultValue)"
@@ -90,7 +90,7 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
         else {
             return []
         }
-        
+
         guard
             variableDeclSyntax.bindings.count == 1,
             !variableDeclSyntax.bindings

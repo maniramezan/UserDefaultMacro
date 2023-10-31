@@ -12,31 +12,31 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
         providingMembersOf declaration: some DeclGroupSyntax,
         in context: some MacroExpansionContext
       ) throws -> [DeclSyntax] {
-        guard let attributeSyntax = declaration.attributes?.attributeSyntax(named: attributeName) else {
+          guard let attributeSyntax = declaration.attributes.attributeSyntax(named: attributeName) else {
             throw UserDefaultMacroError.noAttributeFound(
                 attributeName: attributeName,
                 modelDescription: declaration.debugDescription)
         }
 
-        let tupleExprElementListSyntax = attributeSyntax.argument?.as(TupleExprElementListSyntax.self)
+          let tupleExprElementListSyntax = attributeSyntax.arguments?.as(LabeledExprListSyntax.self)
           let userDefaultsString = tupleExprElementListSyntax?.extractUserDefaultsParam(canReturnShortenVersion: true) ?? UserDefaults.standardName.description
 
         let mutableVariableDeclSyntaxes = declaration.memberBlock.members
             .compactMap { member in
                 member.decl.as(VariableDeclSyntax.self)
             }.filter { variableDeclSyntax in
-                variableDeclSyntax.bindingKeyword.tokenKind == .keyword(.var)
+                variableDeclSyntax.bindingSpecifier.tokenKind == .keyword(.var)
             }
 
         let attributedVariables = mutableVariableDeclSyntaxes.compactMap { variableDeclSyntax -> (String, String)? in
 
-            let attributeSyntax = variableDeclSyntax.attributes?.attributeSyntax(named: UserDefaultRecordMacro.attributeName)
+            let attributeSyntax = variableDeclSyntax.attributes.attributeSyntax(named: UserDefaultRecordMacro.attributeName)
 
             guard
                 let variableIdentifierSyntax = variableDeclSyntax.bindings
                     .compactMap({ patternBindingSyntax in patternBindingSyntax.pattern.as(IdentifierPatternSyntax.self) })
                     .first,
-                let tupleExprElementListSyntax = attributeSyntax?.argument?.as(TupleExprElementListSyntax.self),
+                let tupleExprElementListSyntax = attributeSyntax?.arguments?.as(LabeledExprListSyntax.self),
                 let defaultValue = tupleExprElementListSyntax.extractDefaultValueParam()
             else {
                 return nil
@@ -79,14 +79,14 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
     ) throws -> [AttributeSyntax] {
         guard
             let variableDeclSyntax = member.as(VariableDeclSyntax.self),
-            variableDeclSyntax.bindingKeyword.tokenKind == .keyword(.var)
+            variableDeclSyntax.bindingSpecifier.tokenKind == .keyword(.var)
         else {
             return []
         }
 
         guard
-            variableDeclSyntax.attributes?.attributeSyntax(named: UserDefaultRecordMacro.attributeName) == nil,
-            variableDeclSyntax.attributes?.attributeSyntax(named: UserDefaultPropertyMacro.attributeName) == nil
+            variableDeclSyntax.attributes.attributeSyntax(named: UserDefaultRecordMacro.attributeName) == nil,
+            variableDeclSyntax.attributes.attributeSyntax(named: UserDefaultPropertyMacro.attributeName) == nil
         else {
             return []
         }
@@ -95,7 +95,7 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
             variableDeclSyntax.bindings.count == 1,
             !variableDeclSyntax.bindings
                 .contains(where: { patternBindingSyntax in
-                    patternBindingSyntax.accessor != nil ||
+                    patternBindingSyntax.accessorBlock != nil ||
                     patternBindingSyntax.initializer != nil
                 })
         else {

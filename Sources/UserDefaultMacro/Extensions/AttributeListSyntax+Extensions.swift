@@ -8,7 +8,7 @@ extension AttributeListSyntax {
                     return nil
                 }
                 guard
-                    let simpleTypeIdentifierSyntax = attributeSyntax.attributeName.as(SimpleTypeIdentifierSyntax.self),
+                    let simpleTypeIdentifierSyntax = attributeSyntax.attributeName.as(IdentifierTypeSyntax.self),
                     simpleTypeIdentifierSyntax.name.text == name
                 else {
                     return nil

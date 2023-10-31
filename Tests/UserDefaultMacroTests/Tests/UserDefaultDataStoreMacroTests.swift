@@ -115,13 +115,13 @@ final class UserDefaultDataStoreMacroTests: BaseTestCase {
         entityType: EntityType = .struct,
         variables: [Variable] = []
     ) -> String {
-        let variableListString = variables.isEmpty ? "" : "\n\(variables.variableList(skipInitialIndentation: true))"
+        let variableListString = variables.isEmpty ? "" : "\(variables.variableList(currentIndent: .spaces(4)))"
 
         let attribute: SwiftAttribute = .dataStore(userDefaults: userDefaults, accessLevel: accessLevel)
 
         return """
         \(attribute.description)
-        \(entityType.rawValue) \(Self.defaultEntityName) {\(variableListString)}
+        \(entityType.rawValue) \(Self.defaultEntityName) {\n\(variableListString)}
         """
     }
 
@@ -153,7 +153,9 @@ final class UserDefaultDataStoreMacroTests: BaseTestCase {
 
         return """
         \(entityType.rawValue) \(Self.defaultEntityName) {
-        \(variables.variableList(attributed: .record(), skipInitialIndentation: false, currentIndent: .spaces(4)))\(Trivia.spaces(4))private let \(userDefaultsParamName): \(BaseTestCase.userDefaultsString)
+        \(variables.variableList(attributed: .record(), currentIndent: .spaces(4)))
+        \(Trivia.spaces(4))private let \(userDefaultsParamName): \(BaseTestCase.userDefaultsString)
+
             \(accessLevel.rawValue) init(\(userDefaultsParamName): \(BaseTestCase.userDefaultsString) = \(userDefaults.description)) {
                 self.\(userDefaultsParamName) = \(userDefaultsParamName)\(defaultValueRegisteringStatement)
             }
@@ -165,12 +167,11 @@ final class UserDefaultDataStoreMacroTests: BaseTestCase {
 fileprivate extension Array where Element == Variable {
     func variableList(
         attributed attribute: SwiftAttribute? = nil,
-        skipInitialIndentation: Bool,
         currentIndent: Trivia = .spaces(0)
     ) -> String {
         map { variable in
             """
-            \(currentIndent)\(variable.description(skipNewlineIndentations: skipInitialIndentation, currentIndent: currentIndent, extraAttribute: variable.isMutable ? attribute : nil))
+            \(currentIndent)\(variable.declaration(currentIndent: currentIndent, extraAttribute: variable.isMutable ? attribute : nil))
 
             """
         }.joined()

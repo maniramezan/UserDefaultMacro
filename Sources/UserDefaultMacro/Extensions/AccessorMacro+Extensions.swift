@@ -17,15 +17,15 @@ extension AccessorMacro {
             throw UserDefaultMacroError.immutableVariable
         }
         
-        let tupleExprElementListSyntax = node.arguments?.as(LabeledExprListSyntax.self)
-        let userDefinedKey = tupleExprElementListSyntax?.extractKeyParam()
-        let defaultValue = tupleExprElementListSyntax?.extractDefaultValueParam()
+        let labeledExprElementListSyntax = node.arguments?.as(LabeledExprListSyntax.self)
+        let userDefinedKey = labeledExprElementListSyntax?.extractKeyParam()
+        let defaultValue = labeledExprElementListSyntax?.extractDefaultValueParam()
         let userDefaultsString: String
         switch userDefaults {
         case .use(let useUserDefaultsString):
             userDefaultsString = useUserDefaultsString
         case .parseFromParams:
-            userDefaultsString = tupleExprElementListSyntax?.extractUserDefaultsParam() ?? UserDefaults.standardFullName.description
+            userDefaultsString = labeledExprElementListSyntax?.extractUserDefaultsParam() ?? UserDefaults.standardFullName.description
         }
         
         guard variableDeclSyntax.bindings.count == 1 else {

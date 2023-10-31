@@ -120,23 +120,23 @@ indirect enum VariableType: CaseIterable {
     }
 
     func castExpressionIfNeeded(with defaultValue: String?, enforceUnwrap: Bool = false) -> String {
-            let shouldForceUnwrap = doesUserDefaultsMethodReturnNullableType && !(defaultValue?.isEmpty ?? true)
+        let shouldForceUnwrap = doesUserDefaultsMethodReturnNullableType && !(defaultValue?.isEmpty ?? true)
 
-            /// Decides whether it should force-unwrap the return value or not. This decision is made based on
-            /// - `defaultValue` is set for this attribute
-            /// - The return value is not optional
-            switch self {
-            case .array,
-                    .dictionary,
-                    .object:
-                return " as\(shouldForceUnwrap ? "!" : "?") \(swiftType)"
-            case .optional(let wrappedType):
-                if wrappedType.doesUserDefaultsMethodReturnNullableType {
-                    return wrappedType.castExpressionIfNeeded(with: defaultValue, enforceUnwrap: false)
-                }
-                return " as? \(wrappedType.swiftType)"
-            default:
-                return shouldForceUnwrap ? "!" : ""
+        /// Decides whether it should force-unwrap the return value or not. This decision is made based on
+        /// - `defaultValue` is set for this attribute
+        /// - The return value is not optional
+        switch self {
+        case .array,
+                .dictionary,
+                .object:
+            return " as\(shouldForceUnwrap ? "!" : "?") \(swiftType)"
+        case .optional(let wrappedType):
+            if wrappedType.doesUserDefaultsMethodReturnNullableType {
+                return wrappedType.castExpressionIfNeeded(with: defaultValue, enforceUnwrap: false)
             }
+            return " as? \(wrappedType.swiftType)"
+        default:
+            return shouldForceUnwrap ? "!" : ""
         }
+    }
 }

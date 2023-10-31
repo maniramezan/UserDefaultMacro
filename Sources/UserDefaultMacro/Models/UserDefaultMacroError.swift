@@ -10,7 +10,7 @@ enum UserDefaultMacroError: Error, CustomStringConvertible {
     case unexpectedBindingPattern(patternBindingDescription: String)
     case oops
     case custom(String)
-
+    
     var description: String {
         switch self {
         case .multipleVariableDeclaration:

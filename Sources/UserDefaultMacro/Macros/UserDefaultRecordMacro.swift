@@ -5,11 +5,11 @@ import SwiftSyntaxMacros
 
 public struct UserDefaultRecordMacro: AccessorMacro {
     static let attributeName = "UserDefaultRecord"
-
+    
     public static func expansion(
-      of node: AttributeSyntax,
-      providingAccessorsOf declaration: some DeclSyntaxProtocol,
-      in context: some MacroExpansionContext
+        of node: AttributeSyntax,
+        providingAccessorsOf declaration: some DeclSyntaxProtocol,
+        in context: some MacroExpansionContext
     ) throws -> [AccessorDeclSyntax] {
         try expansion(
             of: node,
@@ -18,5 +18,5 @@ public struct UserDefaultRecordMacro: AccessorMacro {
             userDefaults: .use(UserDefaultDataStoreMacro.userDefaultsVariableName),
             skipRegisteringDefaultValue: true)
     }
-
+    
 }

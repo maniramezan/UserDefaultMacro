@@ -1,7 +1,7 @@
 import Foundation
 
 indirect enum VariableType: CaseIterable {
-    static var allCases: [VariableType] = [
+    static let allCases: [VariableType] = [
         .int,
         .double,
         .float,

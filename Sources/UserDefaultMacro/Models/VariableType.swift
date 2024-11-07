@@ -65,36 +65,36 @@ indirect enum VariableType: CaseIterable {
                 .url,
                 .string,
                 .optional:
-            return true
+            true
         default:
-            return false
+            false
         }
     }
 
     var swiftType: String {
         switch self {
         case .int:
-            return "Int"
+            "Int"
         case .double:
-            return "Double"
+            "Double"
         case .float:
-            return "Float"
+            "Float"
         case .bool:
-            return "Bool"
+            "Bool"
         case .string:
-            return "String"
+            "String"
         case .url:
-            return "URL"
+            "URL"
         case .data:
-            return "Data"
+            "Data"
         case .array(let elementType):
-            return "[\(elementType.swiftType)]"
+            "[\(elementType.swiftType)]"
         case .dictionary(let keyType, let valueType):
-            return "[\(keyType.swiftType): \(valueType.swiftType)]"
+            "[\(keyType.swiftType): \(valueType.swiftType)]"
         case .optional(let wrappedType):
-            return "\(wrappedType.swiftType)?"
+            "\(wrappedType.swiftType)?"
         case .object(let entityTypeName):
-            return entityTypeName
+            entityTypeName
         }
     }
 
@@ -119,7 +119,7 @@ indirect enum VariableType: CaseIterable {
         }
     }
 
-    func castExpressionIfNeeded(with defaultValue: String?, enforceUnwrap: Bool = false) -> String {
+    func castExpressionIfNeeded(with defaultValue: String?) -> String {
         let shouldForceUnwrap = doesUserDefaultsMethodReturnNullableType && !(defaultValue?.isEmpty ?? true)
 
         /// Decides whether it should force-unwrap the return value or not. This decision is made based on
@@ -132,7 +132,7 @@ indirect enum VariableType: CaseIterable {
             return " as\(shouldForceUnwrap ? "!" : "?") \(swiftType)"
         case .optional(let wrappedType):
             if wrappedType.doesUserDefaultsMethodReturnNullableType {
-                return wrappedType.castExpressionIfNeeded(with: defaultValue, enforceUnwrap: false)
+                return wrappedType.castExpressionIfNeeded(with: defaultValue)
             }
             return " as? \(wrappedType.swiftType)"
         default:

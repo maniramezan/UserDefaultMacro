@@ -1,5 +1,4 @@
-// swift-tools-version: 6.0
-// The swift-tools-version declares the minimum version of Swift required to build this package.
+// swift-tools-version: 6.2
 
 import PackageDescription
 import CompilerPluginSupport
@@ -18,17 +17,19 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "600.0.1"),
-        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.4.3"),
+        .package(url: "https://github.com/apple/swift-syntax.git", from: "602.0.0"),
+        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.4.5"),
     ],
     targets: [
         // Macro implementation that performs the source transformation of a macro.
         .macro(
             name: "UserDefaultMacro",
             dependencies: [
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
-                .product(name: "SwiftCompilerPlugin", package: "swift-syntax")
-            ]
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+            ],
         ),
 
         // Library that exposes a macro as part of its API, which is used in client programs.
@@ -46,5 +47,5 @@ let package = Package(
             ]
         ),
     ],
-    swiftLanguageModes: [.v6, .v5]
 )
+

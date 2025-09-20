@@ -2,6 +2,7 @@ import Foundation
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 
+#if canImport(UserDefaultMacro)
 @testable import UserDefaultMacro
 
 final class UserDefaultPropertyMacroTests: BaseTestCase {
@@ -111,4 +112,4 @@ final class UserDefaultPropertyMacroTests: BaseTestCase {
         )
     }
 }
-
+#endif

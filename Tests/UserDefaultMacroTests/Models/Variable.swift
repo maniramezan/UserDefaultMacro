@@ -1,5 +1,6 @@
 import SwiftSyntax
 
+#if canImport(UserDefaultMacro)
 @testable import UserDefaultMacro
 
 struct Variable: CustomStringConvertible {
@@ -86,3 +87,4 @@ struct Variable: CustomStringConvertible {
         return " = \(initValue)"
     }
 }
+#endif

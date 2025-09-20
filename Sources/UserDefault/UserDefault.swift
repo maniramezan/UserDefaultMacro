@@ -1,5 +1,7 @@
 import Foundation
+#if canImport(UserDefaultMacro)
 import UserDefaultMacro
+#endif
 
 /// # ``UserDefaultMacro``
 
@@ -33,9 +35,11 @@ import UserDefaultMacro
 /// - Parameters:
 ///   - userDefaults: Instance of `UserDefaults` to use. Defaults to `.standard`
 ///   - accessLevel: Access level of the generated `init`. Defaults to `.internal`
+#if canImport(UserDefaultMacro)
 @attached(member, names: named(userDefaults), named(init(userDefaults:)))
 @attached(memberAttribute)
 public macro UserDefaultDataStore(using userDefaults: UserDefaults = .standard, accessLevel: AccessLevel = .internal) = #externalMacro(module: "UserDefaultMacro", type: "UserDefaultDataStoreMacro")
+#endif
 
 /// Intended to be used on mutable properties with no body. This attribute relies on the type already attributed  by ``UserDefaultDataStore(using:accessLevel:)`` and   used on any mutable property with no body.
 ///

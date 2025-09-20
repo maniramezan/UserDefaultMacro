@@ -8,9 +8,10 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
     static let userDefaultsVariableName = "userDefaults"
 
     public static func expansion(
-        of node: AttributeSyntax,
-        providingMembersOf declaration: some DeclGroupSyntax,
-        in context: some MacroExpansionContext
+      of node: AttributeSyntax,
+      providingMembersOf declaration: some DeclGroupSyntax,
+      conformingTo protocols: [TypeSyntax],
+      in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
         guard let attributeSyntax = declaration.attributes.attributeSyntax(named: attributeName) else {
             throw UserDefaultMacroError.noAttributeFound(

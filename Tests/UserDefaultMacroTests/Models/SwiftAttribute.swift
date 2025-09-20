@@ -1,5 +1,6 @@
 import Foundation
 
+#if canImport(UserDefaultMacro)
 @testable import UserDefaultMacro
 
 struct SwiftAttribute: CustomStringConvertible, Hashable {
@@ -107,3 +108,4 @@ struct SwiftAttribute: CustomStringConvertible, Hashable {
             }
     }
 }
+#endif

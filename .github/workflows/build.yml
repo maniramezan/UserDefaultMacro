@@ -12,7 +12,9 @@ jobs:
     runs-on: macos-26
     steps:
     - uses: actions/checkout@v4
-    - uses: swift-actions/setup-swift@v2
+    - uses: vapor/swiftly-action@v0.2
+      with:
+          toolchain: "6.2"
     - name: Build code
       run: swift build -v
     - name: Run tests

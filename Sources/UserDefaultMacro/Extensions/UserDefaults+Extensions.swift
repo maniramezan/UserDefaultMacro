@@ -43,5 +43,5 @@ extension UserDefaults {
 
     static let standardFullName: Name = standardName.asFullName
 
-    static var standardName: Name = .shorten("standard")
+    static let standardName: Name = .shorten("standard")
 }

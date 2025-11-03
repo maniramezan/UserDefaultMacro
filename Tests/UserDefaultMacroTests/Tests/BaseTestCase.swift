@@ -3,6 +3,7 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import XCTest
 
+#if canImport(UserDefaultMacro)
 @testable import UserDefaultMacro
 
 class BaseTestCase: XCTestCase {
@@ -80,3 +81,4 @@ class BaseTestCase: XCTestCase {
         """
     }
 }
+#endif

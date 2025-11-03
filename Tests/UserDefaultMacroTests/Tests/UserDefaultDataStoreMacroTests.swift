@@ -3,6 +3,7 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosTestSupport
 
+#if canImport(UserDefaultMacro)
 @testable import UserDefaultMacro
 
 final class UserDefaultDataStoreMacroTests: BaseTestCase {
@@ -183,3 +184,4 @@ extension AccessLevel {
         ".\(rawValue)"
     }
 }
+#endif

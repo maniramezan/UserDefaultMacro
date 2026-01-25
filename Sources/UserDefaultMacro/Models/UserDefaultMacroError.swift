@@ -8,29 +8,26 @@ enum UserDefaultMacroError: Error, CustomStringConvertible {
     case failedRetrieveVariableType(nodeDescription: String)
     case failedRetrieveVariableTypeName(typeSyntaxDescription: String)
     case unexpectedBindingPattern(patternBindingDescription: String)
-    case oops
     case custom(String)
-    
+
     var description: String {
         switch self {
         case .multipleVariableDeclaration:
-            return "Can't be applied to multi-declaration variable in one line"
+            "Macro cannot be applied to multiple variable declarations in a single line. Declare each property separately."
         case .immutableVariable:
-            return "Array should be defined at mutable, `var`"
+            "Macro can only be applied to mutable properties. Use 'var' instead of 'let'."
         case .missingUserDefaults:
-            return "UserDefaults is missing from parameters"
+            "UserDefaults instance is missing from macro parameters"
         case .noAttributeFound(let attributeName, let modelDescription):
-            return "Expected \(attributeName), but no such attribute found on the model tree: \(modelDescription)"
+            "Expected attribute '\(attributeName)' was not found on: \(modelDescription)"
         case .failedRetrieveVariableType(let nodeDescription):
-            return "Failed to retrieve variable type: \(nodeDescription)"
+            "Failed to retrieve property type annotation. Ensure the property has an explicit type: \(nodeDescription)"
         case .failedRetrieveVariableTypeName(let typeSyntaxDescription):
-            return "Failed to retrieve variable type name from typeSyntax: \(typeSyntaxDescription)"
+            "Failed to parse property type. Unsupported type syntax: \(typeSyntaxDescription)"
         case .unexpectedBindingPattern(let patternBindingDescription):
-            return "Unexpected pattern binding: \(patternBindingDescription)"
-        case .oops:
-            return "Oops, something went wrong!"
+            "Unexpected variable binding pattern. Use simple property declarations: \(patternBindingDescription)"
         case .custom(let msg):
-            return msg
+            msg
         }
     }
 }

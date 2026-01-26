@@ -1,8 +1,8 @@
-import Testing
 import SwiftSyntax
 import SwiftSyntaxMacroExpansion
 import SwiftSyntaxMacros
 import SwiftSyntaxMacrosGenericTestSupport
+import Testing
 
 typealias DiagnosticSpec = SwiftSyntaxMacrosGenericTestSupport.DiagnosticSpec
 typealias FixItSpec = SwiftSyntaxMacrosGenericTestSupport.FixItSpec

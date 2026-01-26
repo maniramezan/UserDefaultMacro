@@ -78,21 +78,15 @@ indirect enum VariableType: CaseIterable {
         // For nullable-returning UserDefaults accessors, unwrap/cast depends on whether the
         // declared property type is optional (skip) or non-optional (force).
         switch self {
-        case .array, .dictionary, .object:
-            return " as! \(swiftType)"
+        case .array, .dictionary, .object: return " as! \(swiftType)"
         case .optional(let wrappedType):
             switch wrappedType {
-            case .array, .dictionary, .object:
-                return " as? \(wrappedType.swiftType)"
-            case .string, .url, .data:
-                return ""
-            default:
-                return " as? \(wrappedType.swiftType)"
+            case .array, .dictionary, .object: return " as? \(wrappedType.swiftType)"
+            case .string, .url, .data: return ""
+            default: return " as? \(wrappedType.swiftType)"
             }
-        case .string, .url, .data:
-            return "!"
-        default:
-            return ""
+        case .string, .url, .data: return "!"
+        default: return ""
         }
     }
 }

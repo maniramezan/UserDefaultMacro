@@ -13,7 +13,7 @@ import Testing
         let testMacros: [String: Macro.Type] = ["UserDefaultRecord": UserDefaultRecordMacro.self]
 
         @Test
-        func testDefaultValues() {
+        func testExpandsRecordForAllVariableTypes() {
             for item in VariableType.allCases {
                 let variable = createAttributedVariable(name: "varName", type: item)
                 assertMacroExpansion(
@@ -32,7 +32,7 @@ import Testing
         }
 
         @Test
-        func testCustomKeyWithDefaultUserDefaults() {
+        func testExpandsRecordWithCustomKeyUsingDefaultUserDefaults() {
             let variable = createAttributedVariable(key: BaseTestCase.customStringLiteralKey)
             assertMacroExpansion(
                 variable.description,
@@ -42,7 +42,7 @@ import Testing
         }
 
         @Test
-        func testLiteralDefaultValueWithDefaultKeyAndUserDefaults() {
+        func testExpandsRecordWithLiteralDefaultValueUsingDefaultKey() {
             let variable = createAttributedVariable(defaultValue: BaseTestCase.literalDefaultValue)
             assertMacroExpansion(
                 variable.description,
@@ -52,7 +52,7 @@ import Testing
         }
 
         @Test
-        func testVariableDefaultValueWithDefaultKeyAndUserDefaults() {
+        func testExpandsRecordWithVariableDefaultValueUsingDefaultKey() {
             let variable = createAttributedVariable(defaultValue: BaseTestCase.variableDefaultValue)
             assertMacroExpansion(
                 variable.description,

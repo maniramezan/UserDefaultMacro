@@ -17,7 +17,7 @@ import Testing
         // These tests verify complete macro expansion including automatic @UserDefaultRecord application
 
         @Test
-        func testCompleteUserSettingsStore() {
+        func testExpandsCompleteUserSettingsStore() {
             assertMacroExpansion(
                 """
                 @UserDefaultDataStore
@@ -66,7 +66,7 @@ import Testing
         }
 
         @Test
-        func testStoreWithDefaultValues() {
+        func testExpandsStoreWithDefaultValues() {
             assertMacroExpansion(
                 """
                 @UserDefaultDataStore
@@ -109,7 +109,7 @@ import Testing
         }
 
         @Test
-        func testStoreWithCustomKeys() {
+        func testExpandsStoreWithCustomKeys() {
             assertMacroExpansion(
                 """
                 @UserDefaultDataStore
@@ -150,7 +150,7 @@ import Testing
         }
 
         @Test
-        func testPublicAccessLevel() {
+        func testExpandsStoreWithPublicAccessLevel() {
             assertMacroExpansion(
                 """
                 @UserDefaultDataStore(accessLevel: .public)
@@ -181,7 +181,7 @@ import Testing
         }
 
         @Test
-        func testMixedPropertiesWithStoredAndComputed() {
+        func testExpandsStoreWithStoredAndComputedProperties() {
             assertMacroExpansion(
                 """
                 @UserDefaultDataStore
@@ -224,7 +224,7 @@ import Testing
         }
 
         @Test
-        func testOptionalTypes() {
+        func testExpandsStoreWithOptionalTypes() {
             assertMacroExpansion(
                 """
                 @UserDefaultDataStore

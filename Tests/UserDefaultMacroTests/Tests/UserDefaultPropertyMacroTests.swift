@@ -13,7 +13,7 @@ import Testing
         let testMacros: [String: Macro.Type] = ["UserDefaultProperty": UserDefaultPropertyMacro.self]
 
         @Test
-        func testDefaultValues() {
+        func testExpandsPropertyForAllVariableTypes() {
             for item in VariableType.allCases {
                 let variable = createAttributedVariable(name: "varName", type: item)
                 assertMacroExpansion(
@@ -32,7 +32,7 @@ import Testing
         }
 
         @Test
-        func testShortCustomUserDefaultsWithDefaultKey() {
+        func testExpandsPropertyWithShortUserDefaultsNameAndDefaultKey() {
             let variable = createAttributedVariable(userDefaults: BaseTestCase.customUserDefaultsName)
             assertMacroExpansion(
                 variable.description,
@@ -42,7 +42,7 @@ import Testing
         }
 
         @Test
-        func testFullNameCustomUserDefaultsWithDefaultKey() {
+        func testExpandsPropertyWithFullUserDefaultsNameAndDefaultKey() {
             let variable = createAttributedVariable(userDefaults: BaseTestCase.customUserDefaultsName.asFullName)
             assertMacroExpansion(
                 variable.description,
@@ -52,7 +52,7 @@ import Testing
         }
 
         @Test
-        func testCustomKeyWithDefaultUserDefaults() {
+        func testExpandsPropertyWithCustomKeyUsingDefaultUserDefaults() {
             let variable = createAttributedVariable(key: BaseTestCase.customStringLiteralKey)
             assertMacroExpansion(
                 variable.description,
@@ -62,7 +62,7 @@ import Testing
         }
 
         @Test
-        func testCustomKeyAndCustomShortUserDefaults() {
+        func testExpandsPropertyWithCustomKeyAndShortUserDefaultsName() {
             let variable = createAttributedVariable(
                 userDefaults: BaseTestCase.customUserDefaultsName,
                 key: BaseTestCase.customStringLiteralKey
@@ -75,7 +75,7 @@ import Testing
         }
 
         @Test
-        func testCustomKeyVariableAndCustomShortUserDefaults() {
+        func testExpandsPropertyWithVariableKeyAndShortUserDefaultsName() {
             let variable = createAttributedVariable(
                 userDefaults: BaseTestCase.customUserDefaultsName,
                 key: BaseTestCase.customVariableKey
@@ -88,7 +88,7 @@ import Testing
         }
 
         @Test
-        func testLiteralDefaultValueWithDefaultKeyAndUserDefaults() {
+        func testExpandsPropertyWithLiteralDefaultValueUsingDefaultKey() {
             let variable = createAttributedVariable(defaultValue: BaseTestCase.literalDefaultValue)
             assertMacroExpansion(
                 variable.description,
@@ -98,7 +98,7 @@ import Testing
         }
 
         @Test
-        func testVariableDefaultValueWithDefaultKeyAndUserDefaults() {
+        func testExpandsPropertyWithVariableDefaultValueUsingDefaultKey() {
             let variable = createAttributedVariable(defaultValue: BaseTestCase.variableDefaultValue)
             assertMacroExpansion(
                 variable.description,

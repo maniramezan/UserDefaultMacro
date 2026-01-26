@@ -11,7 +11,7 @@ import Testing
         // MARK: - UserDefaultRecord Error Tests
 
         @Test
-        func testRecordMacro_immutableVariable_producesError() {
+        func testRecordMacroRejectsImmutableVariable() {
             let testMacros: [String: Macro.Type] = ["UserDefaultRecord": UserDefaultRecordMacro.self]
 
             assertMacroExpansion(
@@ -35,7 +35,7 @@ import Testing
         }
 
         @Test
-        func testRecordMacro_multipleVariables_producesError() {
+        func testRecordMacroRejectsMultipleVariables() {
             let testMacros: [String: Macro.Type] = ["UserDefaultRecord": UserDefaultRecordMacro.self]
 
             assertMacroExpansion(
@@ -68,7 +68,7 @@ import Testing
         // MARK: - UserDefaultProperty Error Tests
 
         @Test
-        func testPropertyMacro_immutableVariable_producesError() {
+        func testPropertyMacroRejectsImmutableVariable() {
             let testMacros: [String: Macro.Type] = ["UserDefaultProperty": UserDefaultPropertyMacro.self]
 
             assertMacroExpansion(
@@ -92,7 +92,7 @@ import Testing
         }
 
         @Test
-        func testPropertyMacro_multipleVariables_producesError() {
+        func testPropertyMacroRejectsMultipleVariables() {
             let testMacros: [String: Macro.Type] = ["UserDefaultProperty": UserDefaultPropertyMacro.self]
 
             assertMacroExpansion(
@@ -118,7 +118,7 @@ import Testing
         // MARK: - UserDefaultDataStore Error Tests
 
         @Test
-        func testDataStoreMacro_canHandleComputedProperties() {
+        func testDataStoreMacroSkipsComputedProperties() {
             let testMacros: [String: Macro.Type] = ["UserDefaultDataStore": UserDefaultDataStoreMacro.self]
 
             // Should not add @UserDefaultRecord to computed properties
@@ -152,7 +152,7 @@ import Testing
         }
 
         @Test
-        func testDataStoreMacro_canHandlePropertiesWithInitializers() {
+        func testDataStoreMacroSkipsPropertiesWithInitializers() {
             let testMacros: [String: Macro.Type] = ["UserDefaultDataStore": UserDefaultDataStoreMacro.self]
 
             // Should not add @UserDefaultRecord to properties with initializers
@@ -182,7 +182,7 @@ import Testing
         }
 
         @Test
-        func testDataStoreMacro_canHandleLetProperties() {
+        func testDataStoreMacroSkipsLetProperties() {
             let testMacros: [String: Macro.Type] = ["UserDefaultDataStore": UserDefaultDataStoreMacro.self]
 
             // Should not add @UserDefaultRecord to let properties

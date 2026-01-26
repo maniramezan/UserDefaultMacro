@@ -27,12 +27,12 @@ import Testing
             """
 
         @Test
-        func testInitializerWithDefaultValues() {
+        func testExpandsDataStoreWithDefaultValues() {
             assertMacroExpansion(originalSource(), expandedSource: expandedSource(), macros: testMacros)
         }
 
         @Test
-        func testInitializerWithAccessorLevel() {
+        func testExpandsDataStoreWithCustomAccessLevel() {
             let accessLevel: AccessLevel = .public
             assertMacroExpansion(
                 originalSource(accessLevel: accessLevel),
@@ -42,7 +42,7 @@ import Testing
         }
 
         @Test
-        func testInitializerWithShortenUserDefaults() {
+        func testExpandsDataStoreWithShortUserDefaultsName() {
             let userDefaults = BaseTestCase.customUserDefaultsName
             assertMacroExpansion(
                 originalSource(userDefaults: userDefaults),
@@ -52,7 +52,7 @@ import Testing
         }
 
         @Test
-        func testInitializerWithFullNameUserDefaults() {
+        func testExpandsDataStoreWithFullUserDefaultsName() {
             let userDefaults = BaseTestCase.customUserDefaultsName.asFullName
             assertMacroExpansion(
                 originalSource(userDefaults: userDefaults),
@@ -62,7 +62,7 @@ import Testing
         }
 
         @Test
-        func testMutableVariableIsMarkedRecordAttribute() {
+        func testMarksMutableStoredPropertiesWithRecordAttribute() {
             let variable = Variable(name: "varName", type: .int)
             assertMacroExpansion(
                 originalSource(variables: [variable]),
@@ -72,7 +72,7 @@ import Testing
         }
 
         @Test
-        func testComputationalVariableIsNotMarkedRecordAttribute() {
+        func testSkipsComputedPropertiesForRecordAttribute() {
             let variable = Variable(name: "varName", type: .int, declaration: .computational(computationalVariableBody))
             assertMacroExpansion(
                 originalSource(variables: [variable]),
@@ -82,7 +82,7 @@ import Testing
         }
 
         @Test
-        func testDefaultKeyVariableIsRegisteredInInit() {
+        func testRegistersDefaultValueForDefaultKeyInInit() {
             let variable = Variable(name: "varName", type: .int, attribute: .record(defaultValue: "2"))
             assertMacroExpansion(
                 originalSource(variables: [variable]),
@@ -92,7 +92,7 @@ import Testing
         }
 
         @Test
-        func testDefaultKeyVariableWithCustomStringLiteralKeyIsRegisteredInInit() {
+        func testRegistersDefaultValueForCustomLiteralKeyInInit() {
             let variable = Variable(
                 name: "varName",
                 type: .int,
@@ -106,7 +106,7 @@ import Testing
         }
 
         @Test
-        func testDefaultKeyVariableWithCustomVariableKeyIsRegisteredInInit() {
+        func testRegistersDefaultValueForCustomVariableKeyInInit() {
             let variable = Variable(
                 name: "varName",
                 type: .int,

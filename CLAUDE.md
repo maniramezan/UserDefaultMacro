@@ -127,10 +127,10 @@ The `LabeledExprElementListSyntax+Extensions.swift` file contains helper methods
 
 ## Testing
 
-Tests use `SwiftSyntaxMacrosTestSupport` framework:
-- `BaseTestCase`: Shared test infrastructure with helper methods
-- Test models: `Variable`, `SwiftAttribute` - represent macro inputs for test cases
-- Tests verify expanded source code matches expected output
+Tests use `SwiftSyntaxMacrosGenericTestSupport` together with Swift's `Testing` framework:
+- Shared helper types provide common assertion and expansion utilities
+- Test models (e.g., `Variable`, `SwiftAttribute`) represent macro inputs for test cases
+- Tests verify that expanded source code and diagnostics match expected output
 
 ### Test Structure
 

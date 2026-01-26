@@ -13,8 +13,6 @@ This repo provides several macros to help reducing boilerplate code for using `U
 
 ## Getting started
 
-> 💡 **Quick Start**: Check out the [Examples/](Examples/) directory for ready-to-use code samples covering basic to advanced usage patterns.
-
 ### Add to your project
 
 Add reference to this repo into your project. If using SwiftPM, you can use following template, otherwise, you can search for this repo in Xcode.

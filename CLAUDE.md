@@ -156,13 +156,6 @@ Total: 34 tests with 100% pass rate
 - Runs formatting checks, build, tests, and DocC generation on PRs to main branch
 - Uses swift-format plugin (no external tool installation required)
 
-## Examples
-
-The `Examples/` directory contains:
-- `BasicUsage.swift`: Simple settings stores, default values, custom keys
-- `AdvancedUsage.swift`: Custom suites, collections, Codable types, thread safety
-- `README.md`: Common patterns and best practices
-
 ## Important Design Decisions
 
 ### Force Unwrapping

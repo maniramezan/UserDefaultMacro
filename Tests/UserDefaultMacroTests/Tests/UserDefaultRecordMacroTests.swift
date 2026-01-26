@@ -8,8 +8,6 @@ import Testing
     @Suite
     struct UserDefaultRecordMacroTests {
 
-        private static let attributeName = "@\(UserDefaultRecordMacro.attributeName)"
-
         let testMacros: [String: Macro.Type] = ["UserDefaultRecord": UserDefaultRecordMacro.self]
 
         @Test

@@ -52,7 +52,7 @@ extension AccessorMacro {
                 "\(userDefaultsString).register(defaults: [\(key): \(defaultValue)])\nreturn "
             } else { "" }
 
-        let getterSuffixString = variableType.castExpressionIfNeeded(with: defaultValue)
+        let getterSuffixString = variableType.castExpressionIfNeeded()
 
         return [
             "get { \(raw: registerDefaultValue)\(raw: userDefaultsString).\(raw: variableType.userDefaultsMethodName)(forKey: \(raw: key))\(raw: getterSuffixString) }",

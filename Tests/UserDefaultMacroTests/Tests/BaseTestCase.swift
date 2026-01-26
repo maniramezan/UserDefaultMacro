@@ -25,7 +25,7 @@ import SwiftSyntaxMacros
             let storageKey = variable.attribute?[.key]?.description ?? variable.name.withDoubleQuotes
 
             let defaultValue = variable.attribute?[.defaultValue]
-            let getterSuffixString = variable.type.castExpressionIfNeeded(with: defaultValue)
+            let getterSuffixString = variable.type.castExpressionIfNeeded()
 
             let userDefaultsInstanceString: String
             if let userDefault = variable.attribute?[.userDefaults] {
@@ -61,7 +61,7 @@ import SwiftSyntaxMacros
             let storageKey = variable.attribute?[.key]?.description ?? variable.name.withDoubleQuotes
 
             let defaultValue = variable.attribute?[.defaultValue]
-            let getterSuffixString = variable.type.castExpressionIfNeeded(with: defaultValue)
+            let getterSuffixString = variable.type.castExpressionIfNeeded()
             let userDefaultsInstanceString = UserDefaultDataStoreMacro.userDefaultsVariableName
 
             return """

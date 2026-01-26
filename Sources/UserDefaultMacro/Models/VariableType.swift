@@ -72,9 +72,7 @@ indirect enum VariableType: CaseIterable {
         }
     }
 
-    func castExpressionIfNeeded(with defaultValue: String?) -> String {
-        _ = defaultValue
-
+    func castExpressionIfNeeded() -> String {
         // For nullable-returning UserDefaults accessors, unwrap/cast depends on whether the
         // declared property type is optional (skip) or non-optional (force).
         switch self {

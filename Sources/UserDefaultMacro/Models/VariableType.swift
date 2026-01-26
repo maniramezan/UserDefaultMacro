@@ -73,19 +73,26 @@ indirect enum VariableType: CaseIterable {
     }
 
     func castExpressionIfNeeded(with defaultValue: String?) -> String {
-        let shouldForceUnwrap = doesUserDefaultsMethodReturnNullableType && !(defaultValue?.isEmpty ?? true)
+        _ = defaultValue
 
-        // Decides whether it should force-unwrap the return value or not. This decision is made based on
-        // - `defaultValue` is set for this attribute
-        // - The return value is not optional
+        // For nullable-returning UserDefaults accessors, unwrap/cast depends on whether the
+        // declared property type is optional (skip) or non-optional (force).
         switch self {
-        case .array, .dictionary, .object: return " as\(shouldForceUnwrap ? "!" : "?") \(swiftType)"
+        case .array, .dictionary, .object:
+            return " as! \(swiftType)"
         case .optional(let wrappedType):
-            if wrappedType.doesUserDefaultsMethodReturnNullableType {
-                return wrappedType.castExpressionIfNeeded(with: defaultValue)
+            switch wrappedType {
+            case .array, .dictionary, .object:
+                return " as? \(wrappedType.swiftType)"
+            case .string, .url, .data:
+                return ""
+            default:
+                return " as? \(wrappedType.swiftType)"
             }
-            return " as? \(wrappedType.swiftType)"
-        default: return shouldForceUnwrap ? "!" : ""
+        case .string, .url, .data:
+            return "!"
+        default:
+            return ""
         }
     }
 }

@@ -273,7 +273,7 @@ Generated code:
 ```swift
 var userName: String {
     get {
-        userDefaults.string(forKey: "userName")  // Returns String?, force unwrapped
+        userDefaults.string(forKey: "userName")!  // Returns String, force unwrapped
     }
 }
 

@@ -107,24 +107,25 @@ struct UserProfile: Codable {
 
 @UserDefaultDataStore
 struct ProfileStore {
-    // Custom Codable types are stored as Data
-    var currentProfile: UserProfile
-
-    // Optional custom types
-    var cachedProfile: UserProfile?
+    // Note: Custom Codable types are NOT automatically encoded/decoded.
+    // Store Data instead and encode/decode explicitly.
+    var currentProfileData: Data?
 }
 
-func codableTypesExample() {
+func codableTypesExample() throws {
     let store = ProfileStore()
 
     // Create profile
     let profile = UserProfile(name: "John", age: 30, email: "john@example.com")
 
-    // Store it (automatically encoded to Data)
-    store.currentProfile = profile
+    // Store it (encode to Data explicitly)
+    store.currentProfileData = try JSONEncoder().encode(profile)
 
-    // Retrieve it (automatically decoded)
-    print(store.currentProfile.name)  // "John"
+    // Retrieve it (decode from Data explicitly)
+    if let data = store.currentProfileData {
+        let decoded = try JSONDecoder().decode(UserProfile.self, from: data)
+        print(decoded.name)  // "John"
+    }
 }
 
 // MARK: - Thread Safety
@@ -137,7 +138,7 @@ actor ThreadSafeSettings {
         var timestamp: Double
     }
 
-    private let settings = InternalSettings()
+    private var settings = InternalSettings()
 
     func incrementCounter() {
         settings.counter += 1

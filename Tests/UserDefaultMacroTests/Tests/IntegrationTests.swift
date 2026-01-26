@@ -39,7 +39,7 @@ import Testing
                         }
                         var userName: String {
                             get {
-                                userDefaults.string(forKey: "userName")
+                                userDefaults.string(forKey: "userName")!
                             }
                             set {
                                 userDefaults.setValue(newValue, forKey: "userName")
@@ -123,7 +123,7 @@ import Testing
                     struct Settings {
                         var userName: String {
                             get {
-                                userDefaults.string(forKey: "user_name")
+                                userDefaults.string(forKey: "user_name")!
                             }
                             set {
                                 userDefaults.setValue(newValue, forKey: "user_name")
@@ -131,7 +131,7 @@ import Testing
                         }
                         var email: String {
                             get {
-                                userDefaults.string(forKey: "email")
+                                userDefaults.string(forKey: "email")!
                             }
                             set {
                                 userDefaults.setValue(newValue, forKey: "email")
@@ -162,7 +162,7 @@ import Testing
                     public struct PublicSettings {
                         var apiKey: String {
                             get {
-                                userDefaults.string(forKey: "apiKey")
+                                userDefaults.string(forKey: "apiKey")!
                             }
                             set {
                                 userDefaults.setValue(newValue, forKey: "apiKey")

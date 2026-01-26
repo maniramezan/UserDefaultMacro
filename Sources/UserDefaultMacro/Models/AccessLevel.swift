@@ -5,5 +5,5 @@ public enum AccessLevel: String {
     case `private`
     case `internal`
     case `fileprivate`
-    case `open`
+    case open
 }

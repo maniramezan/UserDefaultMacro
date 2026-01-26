@@ -30,9 +30,15 @@ jobs:
     
     - name: Verify Swift
       run: swift --version
+
+    - name: Check formatting
+      run: swift package lint-source-code --recursive .
+
     - name: Build code
       run: swift build -v
+
     - name: Run tests
-      run: swift test -v
+      run: swift test --enable-swift-testing -v
+
     - name: Build DocC
       run: ./build-docc.sh

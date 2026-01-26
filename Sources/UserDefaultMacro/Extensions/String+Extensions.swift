@@ -1,7 +1,3 @@
 import Foundation
 
-extension String {
-    var withDoubleQuotes: String {
-        "\"\(self)\""
-    }
-}
+extension String { var withDoubleQuotes: String { "\"\(self)\"" } }

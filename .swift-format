@@ -1,17 +1,20 @@
 {
   "version": 1,
-  "lineLength": 160,
+  "lineLength": 120,
   "indentation": {
     "spaces": 4
   },
+  "tabWidth" : 4,
   "maximumBlankLines": 1,
   "respectsExistingLineBreaks": false,
   "lineBreakBeforeControlFlowKeywords": false,
   "lineBreakBeforeEachArgument": true,
   "lineBreakBeforeEachGenericRequirement": false,
+  "lineBreakBetweenDeclarationAttributes": true,
   "prioritizeKeepingFunctionOutputTogether": false,
   "indentConditionalCompilationBlocks": true,
   "indentSwitchCaseLabels": false,
+  "multiElementCollectionTrailingCommas": true,
   "fileScopedDeclarationPrivacy": {
     "accessLevel": "private"
   },
@@ -43,7 +46,6 @@
     "OmitExplicitReturns": true,
     "OneCasePerLine": true,
     "OneVariableDeclarationPerLine": true,
-    "OnlyOneTrailingClosureArgument": true,
     "OrderedImports": true,
     "ReplaceForEachWithForLoop": true,
     "ReturnVoidInsteadOfEmptyTuple": true,

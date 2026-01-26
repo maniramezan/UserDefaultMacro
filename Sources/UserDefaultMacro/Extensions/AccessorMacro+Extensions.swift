@@ -6,73 +6,64 @@ extension AccessorMacro {
     static func expansion(
         of node: AttributeSyntax,
         providingAccessorsOf declaration: some DeclSyntaxProtocol,
-        in context: some MacroExpansionContext,
+        in _: some MacroExpansionContext,
         userDefaults: UserDefaultsType,
         skipRegisteringDefaultValue: Bool
     ) throws -> [AccessorDeclSyntax] {
-        guard
-            let variableDeclSyntax = declaration.as(VariableDeclSyntax.self),
+        guard let variableDeclSyntax = declaration.as(VariableDeclSyntax.self),
             variableDeclSyntax.bindingSpecifier.tokenKind == .keyword(.var)
-        else {
-            throw UserDefaultMacroError.immutableVariable
-        }
+        else { throw UserDefaultMacroError.immutableVariable }
 
         let labeledExprElementListSyntax = node.arguments?.as(LabeledExprListSyntax.self)
         let userDefinedKey = labeledExprElementListSyntax?.extractKeyParam()
         let defaultValue = labeledExprElementListSyntax?.extractDefaultValueParam()
-        let userDefaultsString: String
-        switch userDefaults {
-        case .use(let useUserDefaultsString):
-            userDefaultsString = useUserDefaultsString
-        case .parseFromParams:
-            userDefaultsString = labeledExprElementListSyntax?.extractUserDefaultsParam() ?? UserDefaults.standardFullName.description
-        }
+        let userDefaultsString: String =
+            switch userDefaults {
+            case .use(let useUserDefaultsString): useUserDefaultsString
+            case .parseFromParams:
+                labeledExprElementListSyntax?.extractUserDefaultsParam() ?? UserDefaults.standardFullName.description
+            }
 
-        guard variableDeclSyntax.bindings.count == 1 else {
-            throw UserDefaultMacroError.multipleVariableDeclaration
-        }
+        guard variableDeclSyntax.bindings.count == 1 else { throw UserDefaultMacroError.multipleVariableDeclaration }
 
-        guard
-            let patternBindingSyntax = variableDeclSyntax.bindings.first,
+        guard let patternBindingSyntax = variableDeclSyntax.bindings.first,
             let identifierPatternSyntax = patternBindingSyntax.pattern.as(IdentifierPatternSyntax.self)
         else {
-            let description = variableDeclSyntax.bindings.first?.pattern.debugDescription ?? variableDeclSyntax.bindings.debugDescription
-            throw UserDefaultMacroError.unexpectedBindingPattern(
-                patternBindingDescription: description)
+            let description =
+                variableDeclSyntax.bindings.first?.pattern.debugDescription
+                ?? variableDeclSyntax.bindings.debugDescription
+            throw UserDefaultMacroError.unexpectedBindingPattern(patternBindingDescription: description)
         }
 
         let variableName = identifierPatternSyntax.identifier.text
 
         guard let typeAnnotationSyntax = patternBindingSyntax.typeAnnotation else {
-            throw UserDefaultMacroError.failedRetrieveVariableType(nodeDescription: patternBindingSyntax.debugDescription)
+            throw UserDefaultMacroError.failedRetrieveVariableType(
+                nodeDescription: patternBindingSyntax.debugDescription
+            )
         }
 
         let variableType = try parseTypeSyntax(typeAnnotationSyntax.type)
 
         let key = userDefinedKey ?? variableName.withDoubleQuotes
 
-        let registerDefaultValue: String
-        if
-            !skipRegisteringDefaultValue,
-            let defaultValue = defaultValue
-        {
-            registerDefaultValue = "\(userDefaultsString).register(defaults: [\(key): \(defaultValue)])\nreturn "
-        } else {
-            registerDefaultValue = ""
-        }
+        let registerDefaultValue =
+            if !skipRegisteringDefaultValue, let defaultValue {
+                "\(userDefaultsString).register(defaults: [\(key): \(defaultValue)])\nreturn "
+            } else { "" }
 
         let getterSuffixString = variableType.castExpressionIfNeeded(with: defaultValue)
 
         return [
             "get { \(raw: registerDefaultValue)\(raw: userDefaultsString).\(raw: variableType.userDefaultsMethodName)(forKey: \(raw: key))\(raw: getterSuffixString) }",
-            "set { \(raw: userDefaultsString).setValue(newValue, forKey: \(raw: key)) }"
+            "set { \(raw: userDefaultsString).setValue(newValue, forKey: \(raw: key)) }",
         ]
     }
 
     // MARK: - Private methods
 
     private static func parseTypeSyntax(_ typeSyntax: TypeSyntax?) throws -> VariableType {
-        guard let typeSyntax = typeSyntax else {
+        guard let typeSyntax else {
             throw UserDefaultMacroError.failedRetrieveVariableTypeName(typeSyntaxDescription: "No typeSyntax found.")
         }
 
@@ -83,11 +74,13 @@ extension AccessorMacro {
 
         if let simpleTypeIdentifierSyntax = typeSyntax.as(IdentifierTypeSyntax.self) {
             guard case .identifier(let typeName) = simpleTypeIdentifierSyntax.name.tokenKind else {
-                throw UserDefaultMacroError.failedRetrieveVariableTypeName(typeSyntaxDescription: typeSyntax.debugDescription)
+                throw UserDefaultMacroError.failedRetrieveVariableTypeName(
+                    typeSyntaxDescription: typeSyntax.debugDescription
+                )
             }
             return VariableType(swiftTypeName: typeName)
         }
-        
+
         if let dictionaryTypeSyntax = typeSyntax.as(DictionaryTypeSyntax.self) {
             let keyType = try parseTypeSyntax(dictionaryTypeSyntax.key)
             let valueType = try parseTypeSyntax(dictionaryTypeSyntax.value)
@@ -98,7 +91,6 @@ extension AccessorMacro {
             let elementTypeName = try parseTypeSyntax(arrayTypeSyntax.element)
             return .array(elementType: elementTypeName)
         }
-
 
         throw UserDefaultMacroError.failedRetrieveVariableTypeName(typeSyntaxDescription: typeSyntax.debugDescription)
     }

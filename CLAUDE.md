@@ -12,45 +12,17 @@ UserDefaultMacro is a Swift macro package that generates boilerplate code for `U
 
 ## Build & Test Commands
 
-### Using Makefile (Recommended)
-
-```bash
-# Format all Swift files
-make format
-
-# Check formatting (without changes)
-make format-check
-
-# Build the package
-make build
-
-# Run all tests
-make test
-
-# Generate documentation
-make docc
-
-# Format, build, and test
-make all
-
-# Clean build artifacts
-make clean
-
-# Show all available commands
-make help
-```
-
-### Using SwiftPM Plugin Directly
+### Code Formatting
 
 ```bash
 # Format all Swift files (requires permission)
 swift package --allow-writing-to-package-directory format-source-code --recursive .
 
-# Check formatting without making changes
+# Check formatting without making changes (for CI)
 swift package lint-source-code --recursive .
 ```
 
-### Using Swift Commands Directly
+### Build & Test
 
 ```bash
 # Build the package
@@ -67,12 +39,23 @@ swift test -v
 
 # Run specific test
 swift test --filter UserDefaultPropertyMacroTests
+```
 
+### Documentation
+
+```bash
 # Generate documentation
 swift package generate-documentation --target UserDefault
 
 # Build DocC for static hosting
 ./build-docc.sh
+```
+
+### Clean
+
+```bash
+# Clean build artifacts
+swift package clean
 ```
 
 ### Code Formatting
@@ -88,8 +71,6 @@ Configuration is in `.swift-format` file (JSON format).
 
 **Before committing**, run:
 ```bash
-make format
-# or
 swift package --allow-writing-to-package-directory format-source-code --recursive .
 ```
 

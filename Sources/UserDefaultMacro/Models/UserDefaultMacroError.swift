@@ -14,10 +14,8 @@ enum UserDefaultMacroError: Error, CustomStringConvertible {
         switch self {
         case .multipleVariableDeclaration:
             "Macro cannot be applied to multiple variable declarations in a single line. Declare each property separately."
-        case .immutableVariable:
-            "Macro can only be applied to mutable properties. Use 'var' instead of 'let'."
-        case .missingUserDefaults:
-            "UserDefaults instance is missing from macro parameters"
+        case .immutableVariable: "Macro can only be applied to mutable properties. Use 'var' instead of 'let'."
+        case .missingUserDefaults: "UserDefaults instance is missing from macro parameters"
         case .noAttributeFound(let attributeName, let modelDescription):
             "Expected attribute '\(attributeName)' was not found on: \(modelDescription)"
         case .failedRetrieveVariableType(let nodeDescription):
@@ -26,8 +24,7 @@ enum UserDefaultMacroError: Error, CustomStringConvertible {
             "Failed to parse property type. Unsupported type syntax: \(typeSyntaxDescription)"
         case .unexpectedBindingPattern(let patternBindingDescription):
             "Unexpected variable binding pattern. Use simple property declarations: \(patternBindingDescription)"
-        case .custom(let msg):
-            msg
+        case .custom(let msg): msg
         }
     }
 }

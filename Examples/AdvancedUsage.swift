@@ -168,8 +168,10 @@ func testingExample() {
     let settings = AppSettings(userDefaults: testDefaults)
     settings.userName = "Test User"
 
-    // Clean up after test
-    testDefaults.removeSuite(named: testDefaults.suiteName!)
+    // Clean up after test: remove the persistent domain for this suite
+    if let suiteName = testDefaults.suiteName {
+        UserDefaults.standard.removePersistentDomain(forName: suiteName)
+    }
 }
 
 // Reference to AppSettings from BasicUsage.swift

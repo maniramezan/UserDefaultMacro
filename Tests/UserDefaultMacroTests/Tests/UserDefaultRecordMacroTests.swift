@@ -1,57 +1,62 @@
 import Foundation
 import SwiftSyntaxMacros
-import SwiftSyntaxMacrosTestSupport
+import Testing
 
 #if canImport(UserDefaultMacro)
     @testable import UserDefaultMacro
 
-    final class UserDefaultRecordMacroTests: BaseTestCase {
+    @Suite
+    struct UserDefaultRecordMacroTests {
 
         private static let attributeName = "@\(UserDefaultRecordMacro.attributeName)"
 
         let testMacros: [String: Macro.Type] = ["UserDefaultRecord": UserDefaultRecordMacro.self]
 
+        @Test
         func testDefaultValues() {
             for item in VariableType.allCases {
                 let variable = createAttributedVariable(name: "varName", type: item)
                 assertMacroExpansion(
                     variable.description,
-                    expandedSource: expandedRecordSource(for: variable),
+                    expandedSource: BaseTestCase.expandedRecordSource(for: variable),
                     macros: testMacros
                 )
 
                 let optionalVariable = createAttributedVariable(name: "varName", type: .optional(wrappedType: item))
                 assertMacroExpansion(
                     optionalVariable.description,
-                    expandedSource: expandedRecordSource(for: optionalVariable),
+                    expandedSource: BaseTestCase.expandedRecordSource(for: optionalVariable),
                     macros: testMacros
                 )
             }
         }
 
+        @Test
         func testCustomKeyWithDefaultUserDefaults() {
-            let variable = createAttributedVariable(key: customStringLiteralKey)
+            let variable = createAttributedVariable(key: BaseTestCase.customStringLiteralKey)
             assertMacroExpansion(
                 variable.description,
-                expandedSource: expandedRecordSource(for: variable),
+                expandedSource: BaseTestCase.expandedRecordSource(for: variable),
                 macros: testMacros
             )
         }
 
+        @Test
         func testLiteralDefaultValueWithDefaultKeyAndUserDefaults() {
-            let variable = createAttributedVariable(defaultValue: literalDefaultValue)
+            let variable = createAttributedVariable(defaultValue: BaseTestCase.literalDefaultValue)
             assertMacroExpansion(
                 variable.description,
-                expandedSource: expandedRecordSource(for: variable),
+                expandedSource: BaseTestCase.expandedRecordSource(for: variable),
                 macros: testMacros
             )
         }
 
+        @Test
         func testVariableDefaultValueWithDefaultKeyAndUserDefaults() {
-            let variable = createAttributedVariable(defaultValue: variableDefaultValue)
+            let variable = createAttributedVariable(defaultValue: BaseTestCase.variableDefaultValue)
             assertMacroExpansion(
                 variable.description,
-                expandedSource: expandedRecordSource(for: variable),
+                expandedSource: BaseTestCase.expandedRecordSource(for: variable),
                 macros: testMacros
             )
         }

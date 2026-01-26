@@ -1,96 +1,108 @@
 import Foundation
 import SwiftSyntaxMacros
-import SwiftSyntaxMacrosTestSupport
+import Testing
 
 #if canImport(UserDefaultMacro)
     @testable import UserDefaultMacro
 
-    final class UserDefaultPropertyMacroTests: BaseTestCase {
+    @Suite
+    struct UserDefaultPropertyMacroTests {
 
         private static let attributeName = "@\(UserDefaultPropertyMacro.attributeName)"
 
         let testMacros: [String: Macro.Type] = ["UserDefaultProperty": UserDefaultPropertyMacro.self]
 
+        @Test
         func testDefaultValues() {
             for item in VariableType.allCases {
                 let variable = createAttributedVariable(name: "varName", type: item)
                 assertMacroExpansion(
                     variable.description,
-                    expandedSource: expandedPropertySource(for: variable),
+                    expandedSource: BaseTestCase.expandedPropertySource(for: variable),
                     macros: testMacros
                 )
 
                 let optionalVariable = createAttributedVariable(name: "varName", type: .optional(wrappedType: item))
                 assertMacroExpansion(
                     optionalVariable.description,
-                    expandedSource: expandedPropertySource(for: optionalVariable),
+                    expandedSource: BaseTestCase.expandedPropertySource(for: optionalVariable),
                     macros: testMacros
                 )
             }
         }
 
+        @Test
         func testShortCustomUserDefaultsWithDefaultKey() {
-            let variable = createAttributedVariable(userDefaults: Self.customUserDefaultsName)
+            let variable = createAttributedVariable(userDefaults: BaseTestCase.customUserDefaultsName)
             assertMacroExpansion(
                 variable.description,
-                expandedSource: expandedPropertySource(for: variable),
+                expandedSource: BaseTestCase.expandedPropertySource(for: variable),
                 macros: testMacros
             )
         }
 
+        @Test
         func testFullNameCustomUserDefaultsWithDefaultKey() {
-            let variable = createAttributedVariable(userDefaults: Self.customUserDefaultsName.asFullName)
+            let variable = createAttributedVariable(userDefaults: BaseTestCase.customUserDefaultsName.asFullName)
             assertMacroExpansion(
                 variable.description,
-                expandedSource: expandedPropertySource(for: variable),
+                expandedSource: BaseTestCase.expandedPropertySource(for: variable),
                 macros: testMacros
             )
         }
 
+        @Test
         func testCustomKeyWithDefaultUserDefaults() {
-            let variable = createAttributedVariable(key: customStringLiteralKey)
+            let variable = createAttributedVariable(key: BaseTestCase.customStringLiteralKey)
             assertMacroExpansion(
                 variable.description,
-                expandedSource: expandedPropertySource(for: variable),
+                expandedSource: BaseTestCase.expandedPropertySource(for: variable),
                 macros: testMacros
             )
         }
 
+        @Test
         func testCustomKeyAndCustomShortUserDefaults() {
             let variable = createAttributedVariable(
-                userDefaults: Self.customUserDefaultsName,
-                key: customStringLiteralKey
+                userDefaults: BaseTestCase.customUserDefaultsName,
+                key: BaseTestCase.customStringLiteralKey
             )
             assertMacroExpansion(
                 variable.description,
-                expandedSource: expandedPropertySource(for: variable),
+                expandedSource: BaseTestCase.expandedPropertySource(for: variable),
                 macros: testMacros
             )
         }
 
+        @Test
         func testCustomKeyVariableAndCustomShortUserDefaults() {
-            let variable = createAttributedVariable(userDefaults: Self.customUserDefaultsName, key: customVariableKey)
+            let variable = createAttributedVariable(
+                userDefaults: BaseTestCase.customUserDefaultsName,
+                key: BaseTestCase.customVariableKey
+            )
             assertMacroExpansion(
                 variable.description,
-                expandedSource: expandedPropertySource(for: variable),
+                expandedSource: BaseTestCase.expandedPropertySource(for: variable),
                 macros: testMacros
             )
         }
 
+        @Test
         func testLiteralDefaultValueWithDefaultKeyAndUserDefaults() {
-            let variable = createAttributedVariable(defaultValue: literalDefaultValue)
+            let variable = createAttributedVariable(defaultValue: BaseTestCase.literalDefaultValue)
             assertMacroExpansion(
                 variable.description,
-                expandedSource: expandedPropertySource(for: variable),
+                expandedSource: BaseTestCase.expandedPropertySource(for: variable),
                 macros: testMacros
             )
         }
 
+        @Test
         func testVariableDefaultValueWithDefaultKeyAndUserDefaults() {
-            let variable = createAttributedVariable(defaultValue: variableDefaultValue)
+            let variable = createAttributedVariable(defaultValue: BaseTestCase.variableDefaultValue)
             assertMacroExpansion(
                 variable.description,
-                expandedSource: expandedPropertySource(for: variable),
+                expandedSource: BaseTestCase.expandedPropertySource(for: variable),
                 macros: testMacros
             )
         }

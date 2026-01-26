@@ -1,12 +1,11 @@
 import Foundation
 import SwiftSyntax
 import SwiftSyntaxMacros
-import XCTest
 
 #if canImport(UserDefaultMacro)
     @testable import UserDefaultMacro
 
-    class BaseTestCase: XCTestCase {
+    enum BaseTestCase {
 
         // MARK: - Static properties
 
@@ -15,14 +14,14 @@ import XCTest
 
         // MARK: - Shared properties
 
-        let customStringLiteralKey: SwiftAttribute.Key = .string("variable_key")
-        let customVariableKey: SwiftAttribute.Key = .variable("Self.customKey")
-        let literalDefaultValue = "default_value".withDoubleQuotes
-        let variableDefaultValue = "Self.defaultValue"
+        static let customStringLiteralKey: SwiftAttribute.Key = .string("variable_key")
+        static let customVariableKey: SwiftAttribute.Key = .variable("Self.customKey")
+        static let literalDefaultValue = "default_value".withDoubleQuotes
+        static let variableDefaultValue = "Self.defaultValue"
 
         // MARK: - Helper methods
 
-        func expandedPropertySource(for variable: Variable) -> String {
+        static func expandedPropertySource(for variable: Variable) -> String {
             let storageKey = variable.attribute?[.key]?.description ?? variable.name.withDoubleQuotes
 
             let defaultValue = variable.attribute?[.defaultValue]
@@ -58,7 +57,7 @@ import XCTest
                 """
         }
 
-        func expandedRecordSource(for variable: Variable) -> String {
+        static func expandedRecordSource(for variable: Variable) -> String {
             let storageKey = variable.attribute?[.key]?.description ?? variable.name.withDoubleQuotes
 
             let defaultValue = variable.attribute?[.defaultValue]

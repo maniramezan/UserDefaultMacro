@@ -115,7 +115,7 @@ The package follows standard SwiftPM layout with three main targets:
 `VariableType` enum in `Sources/UserDefaultMacro/Models/VariableType.swift` defines supported types:
 - Maps Swift types (Bool, Int, String, URL, Data, etc.) to UserDefaults getter methods
 - Handles optionals vs non-optionals
-- Provides casting logic when default values are specified
+- Uses default value expressions as written; it does not perform additional casting for default values
 
 ### Parameter Extraction
 

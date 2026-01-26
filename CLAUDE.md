@@ -12,6 +12,46 @@ UserDefaultMacro is a Swift macro package that generates boilerplate code for `U
 
 ## Build & Test Commands
 
+### Using Makefile (Recommended)
+
+```bash
+# Format all Swift files
+make format
+
+# Check formatting (without changes)
+make format-check
+
+# Build the package
+make build
+
+# Run all tests
+make test
+
+# Generate documentation
+make docc
+
+# Format, build, and test
+make all
+
+# Clean build artifacts
+make clean
+
+# Show all available commands
+make help
+```
+
+### Using SwiftPM Plugin Directly
+
+```bash
+# Format all Swift files (requires permission)
+swift package --allow-writing-to-package-directory format-source-code --recursive .
+
+# Check formatting without making changes
+swift package lint-source-code --recursive .
+```
+
+### Using Swift Commands Directly
+
 ```bash
 # Build the package
 swift build
@@ -34,6 +74,26 @@ swift package generate-documentation --target UserDefault
 # Build DocC for static hosting
 ./build-docc.sh
 ```
+
+### Code Formatting
+
+This project uses Apple's **swift-format** (integrated via SwiftPM plugin) for consistent code style:
+- Maximum line width: 160 characters
+- Omit explicit `return` in single-expression functions
+- 4-space indentation
+- Single-line property getters
+- Ordered imports
+
+Configuration is in `.swift-format` file (JSON format).
+
+**Before committing**, run:
+```bash
+make format
+# or
+swift package --allow-writing-to-package-directory format-source-code --recursive .
+```
+
+**No external installation required** - swift-format is included as a package dependency.
 
 ## Package Structure
 
@@ -104,14 +164,16 @@ Total: 34 tests with 100% pass rate
 ## Swift Version Requirements
 
 - Requires Swift 6.2 (specified in Package.swift)
-- Uses swift-syntax 602.0.0+
+- Uses swift-syntax 602.0.0 (exact version)
+- Uses swift-format 602.0.0 (exact version, matched to swift-syntax)
 - Supports macOS 10.15+, iOS 13+, tvOS 13+, watchOS 6+, macCatalyst 13+
 
 ## CI/CD
 
 - Uses GitHub Actions with macOS-26 runner
 - Installs Swift 6.2 via Swiftly
-- Runs build, test, and DocC generation on PRs to main branch
+- Runs formatting checks, build, tests, and DocC generation on PRs to main branch
+- Uses swift-format plugin (no external tool installation required)
 
 ## Examples
 

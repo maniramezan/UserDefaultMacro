@@ -311,7 +311,7 @@ If you have any idea to improve this repo, please feel free to fork and send a p
 
 This project uses Apple's official [swift-format](https://github.com/apple/swift-format) (integrated via SwiftPM plugin) to maintain consistent code formatting. The configuration is in `.swift-format` with the following key rules:
 - Omit explicit `return` in single-expression functions
-- 160 character line width
+- 120 character line width
 - 4-space indentation
 - Single-line property getters
 - Ordered imports

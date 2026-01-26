@@ -145,8 +145,8 @@ Total: 34 tests with 100% pass rate
 ## Swift Version Requirements
 
 - Requires Swift 6.2 (specified in Package.swift)
-- Uses swift-syntax 602.0.0 (exact version)
-- Uses swift-format 602.0.0 (exact version, matched to swift-syntax)
+- Uses swift-syntax from 602.0.0 (SPM semver range)
+- Uses swift-format from 602.0.0 (SPM semver range, matched to swift-syntax series)
 - Supports macOS 10.15+, iOS 13+, tvOS 13+, watchOS 6+, macCatalyst 13+
 
 ## CI/CD

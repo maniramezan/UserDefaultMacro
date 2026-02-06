@@ -110,7 +110,7 @@ public macro UserDefaultRecord<T>(key: String? = nil, defaultValue: T? = Void.se
 /// }
 /// ```
 /// ```swift
-/// /// extension UserDefaults {
+/// extension UserDefaults {
 ///     static let test = UserDefaults(suiteName: "test")!
 /// }
 ///

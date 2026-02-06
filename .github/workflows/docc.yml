@@ -22,7 +22,6 @@ jobs:
     runs-on: macos-26
     permissions:
       contents: read
-      actions: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -54,20 +53,17 @@ jobs:
         with:
           path: .docs
           name: github-pages
-  deploy:
-    runs-on: ubuntu-latest
+
+  docs-deploy:
     needs: build
+    runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
-      contents: read
-      actions: read
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2 
-        with:
-          artifact_name: github-pages
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

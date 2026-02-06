@@ -1,111 +1,110 @@
 import Foundation
 
 #if canImport(UserDefaultMacro)
-@testable import UserDefaultMacro
+    @testable import UserDefaultMacro
 
-struct SwiftAttribute: CustomStringConvertible, Hashable {
+    struct SwiftAttribute: CustomStringConvertible, Hashable {
 
-    enum ParamLabel: String {
-        case userDefaults = "using"
-        case key = "key"
-        case defaultValue = "defaultValue"
-        case accessLevel = "accessLevel"
-    }
+        enum ParamLabel: String {
+            case userDefaults = "using"
+            case key = "key"
+            case defaultValue = "defaultValue"
+            case accessLevel = "accessLevel"
+        }
 
-    enum Key: CustomStringConvertible {
-        case string(String)
-        case variable(String)
+        enum Key: CustomStringConvertible {
+            case string(String)
+            case variable(String)
+
+            var description: String {
+                switch self {
+                case .string(let key): return key.withDoubleQuotes
+                case .variable(let key): return key
+                }
+            }
+        }
+
+        let name: String
+        private let params: [ParamLabel: String]
+
+        // MARK: - Initializer
+
+        private init(name: String, params: [ParamLabel: String]) {
+            self.name = name
+            self.params = params
+        }
+
+        // MARK: - CustomStringConvertible
 
         var description: String {
-            switch self {
-            case .string(let key):
-                return key.withDoubleQuotes
-            case .variable(let key):
-                return key
+            let paramListString: String
+            if !params.isEmpty {
+                paramListString =
+                    "(" + params.map { key, value in "\(key.rawValue): \(value)" }.joined(separator: ", ") + ")"
+            } else {
+                paramListString = ""
             }
+            return "@\(name)\(paramListString)"
         }
-    }
 
-    let name: String
-    private let params: [ParamLabel: String]
+        // MARK: - Hashable
 
-    // MARK: - Initializer
+        func hash(into hasher: inout Hasher) { hasher.combine(name) }
 
-    private init(name: String, params: [ParamLabel: String]) {
-        self.name = name
-        self.params = params
-    }
+        static func == (lhs: SwiftAttribute, rhs: SwiftAttribute) -> Bool { lhs.name == rhs.name }
 
-    // MARK: - CustomStringConvertible
+        // MARK: - Initializer helper methods
 
-    var description: String {
-        let paramListString: String
-        if !params.isEmpty {
-            paramListString = "(" +
-                params.map { key, value in
-                    "\(key.rawValue): \(value)"
-                }.joined(separator: ", ") +
-            ")"
-        } else {
-            paramListString = ""
+        static func record(key: Key? = nil, defaultValue: String? = nil) -> SwiftAttribute {
+            SwiftAttribute(
+                name: UserDefaultRecordMacro.attributeName,
+                params: convertToParamsDictionary(key: key?.description, defaultValue: defaultValue)
+            )
         }
-        return "@\(name)\(paramListString)"
-    }
 
-    // MARK: - Hashable
+        static func property(userDefaults: UserDefaults.Name? = nil, key: Key? = nil, defaultValue: String? = nil)
+            -> SwiftAttribute
+        {
+            SwiftAttribute(
+                name: UserDefaultPropertyMacro.attributeName,
+                params: convertToParamsDictionary(
+                    userDefaults: userDefaults,
+                    key: key?.description,
+                    defaultValue: defaultValue
+                )
+            )
+        }
 
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(name)
-    }
+        static func dataStore(userDefaults: UserDefaults.Name? = nil, key: Key? = nil, accessLevel: AccessLevel? = nil)
+            -> SwiftAttribute
+        {
+            SwiftAttribute(
+                name: UserDefaultDataStoreMacro.attributeName,
+                params: convertToParamsDictionary(
+                    userDefaults: userDefaults,
+                    key: key?.description,
+                    accessLevel: accessLevel
+                )
+            )
+        }
 
-    static func == (lhs: SwiftAttribute, rhs: SwiftAttribute) -> Bool {
-        lhs.name == rhs.name
-    }
+        subscript(_ paramLabel: ParamLabel) -> String? { params[paramLabel] }
 
-    // MARK: - Initializer helper methods
+        // MARK: - Private methods
 
-    static func record(key: Key? = nil, defaultValue: String? = nil) -> SwiftAttribute {
-        SwiftAttribute(
-            name: UserDefaultRecordMacro.attributeName,
-            params: convertToParamsDictionary(key: key?.description, defaultValue: defaultValue)
-        )
-    }
+        private static func convertToParamsDictionary(
+            userDefaults: UserDefaults.Name? = nil,
+            key: String? = nil,
+            defaultValue: String? = nil,
+            accessLevel: AccessLevel? = nil
+        ) -> [ParamLabel: String] {
 
-    static func property(userDefaults: UserDefaults.Name? = nil, key: Key? = nil, defaultValue: String? = nil) -> SwiftAttribute {
-        SwiftAttribute(
-            name: UserDefaultPropertyMacro.attributeName,
-            params: convertToParamsDictionary(userDefaults: userDefaults, key: key?.description, defaultValue: defaultValue)
-        )
-    }
-
-    static func dataStore(userDefaults: UserDefaults.Name? = nil, key: Key? = nil, accessLevel: AccessLevel? = nil) -> SwiftAttribute {
-        SwiftAttribute(
-            name: UserDefaultDataStoreMacro.attributeName,
-            params: convertToParamsDictionary(userDefaults: userDefaults, key: key?.description, accessLevel: accessLevel)
-        )
-    }
-
-    subscript(_ paramLabel: ParamLabel) -> String? {
-        params[paramLabel]
-    }
-
-    // MARK: - Private methods
-
-    private static func convertToParamsDictionary(
-        userDefaults: UserDefaults.Name? = nil,
-        key: String? = nil,
-        defaultValue: String? = nil,
-        accessLevel: AccessLevel? = nil
-    ) -> [ParamLabel: String] {
-
-        let keys: [ParamLabel] = [.userDefaults, .key, .defaultValue, .accessLevel]
-        return zip(keys, [userDefaults?.description, key, defaultValue, accessLevel?.shortName])
-            .reduce(into: [:]) { (result, pair) in
-                guard let val = pair.1 else {
-                    return
-                }
+            let keys: [ParamLabel] = [.userDefaults, .key, .defaultValue, .accessLevel]
+            return zip(keys, [userDefaults?.description, key, defaultValue, accessLevel?.shortName]).reduce(into: [:]) {
+                (result, pair) in
+                guard let val = pair.1 else { return }
                 result[pair.0] = val
             }
+        }
     }
-}
 #endif

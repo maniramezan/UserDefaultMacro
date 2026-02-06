@@ -1,78 +1,79 @@
 import Foundation
 import SwiftSyntaxMacros
-import SwiftSyntaxMacrosTestSupport
+import Testing
 
 #if canImport(UserDefaultMacro)
-@testable import UserDefaultMacro
+    @testable import UserDefaultMacro
 
-final class UserDefaultRecordMacroTests: BaseTestCase {
+    @Suite
+    struct UserDefaultRecordMacroTests {
 
-    private static let attributeName = "@\(UserDefaultRecordMacro.attributeName)"
+        let testMacros: [String: Macro.Type] = ["UserDefaultRecord": UserDefaultRecordMacro.self]
 
-    let testMacros: [String: Macro.Type] = [
-        "UserDefaultRecord": UserDefaultRecordMacro.self,
-    ]
+        @Test
+        func testExpandsRecordForAllVariableTypes() {
+            for item in VariableType.allCases {
+                let variable = createAttributedVariable(name: "varName", type: item)
+                assertMacroExpansion(
+                    variable.description,
+                    expandedSource: BaseTestCase.expandedRecordSource(for: variable),
+                    macros: testMacros
+                )
 
-    func testDefaultValues() {
-        VariableType.allCases.forEach {
-            let variable = createAttributedVariable(name: "varName", type: $0)
+                let optionalVariable = createAttributedVariable(name: "varName", type: .optional(wrappedType: item))
+                assertMacroExpansion(
+                    optionalVariable.description,
+                    expandedSource: BaseTestCase.expandedRecordSource(for: optionalVariable),
+                    macros: testMacros
+                )
+            }
+        }
+
+        @Test
+        func testExpandsRecordWithCustomKeyUsingDefaultUserDefaults() {
+            let variable = createAttributedVariable(key: BaseTestCase.customStringLiteralKey)
             assertMacroExpansion(
                 variable.description,
-                expandedSource: expandedRecordSource(for: variable),
-                macros: testMacros
-            )
-
-            let optionalVariable = createAttributedVariable(name: "varName", type: .optional(wrappedType: $0))
-            assertMacroExpansion(
-                optionalVariable.description,
-                expandedSource: expandedRecordSource(for: optionalVariable),
+                expandedSource: BaseTestCase.expandedRecordSource(for: variable),
                 macros: testMacros
             )
         }
-    }
 
-    func testCustomKeyWithDefaultUserDefaults() {
-        let variable = createAttributedVariable(key: customStringLiteralKey)
-        assertMacroExpansion(
-            variable.description,
-            expandedSource: expandedRecordSource(for: variable),
-            macros: testMacros
-        )
-    }
+        @Test
+        func testExpandsRecordWithLiteralDefaultValueUsingDefaultKey() {
+            let variable = createAttributedVariable(defaultValue: BaseTestCase.literalDefaultValue)
+            assertMacroExpansion(
+                variable.description,
+                expandedSource: BaseTestCase.expandedRecordSource(for: variable),
+                macros: testMacros
+            )
+        }
 
-    func testLiteralDefaultValueWithDefaultKeyAndUserDefaults() {
-        let variable = createAttributedVariable(defaultValue: literalDefaultValue)
-        assertMacroExpansion(
-            variable.description,
-            expandedSource: expandedRecordSource(for: variable),
-            macros: testMacros
-        )
-    }
+        @Test
+        func testExpandsRecordWithVariableDefaultValueUsingDefaultKey() {
+            let variable = createAttributedVariable(defaultValue: BaseTestCase.variableDefaultValue)
+            assertMacroExpansion(
+                variable.description,
+                expandedSource: BaseTestCase.expandedRecordSource(for: variable),
+                macros: testMacros
+            )
+        }
 
-    func testVariableDefaultValueWithDefaultKeyAndUserDefaults() {
-        let variable = createAttributedVariable(defaultValue: variableDefaultValue)
-        assertMacroExpansion(
-            variable.description,
-            expandedSource: expandedRecordSource(for: variable),
-            macros: testMacros
-        )
-    }
+        // MARK: - Private Methods
 
-    // MARK: - Private Methods
-
-    private func createAttributedVariable(
-        name: String = "varName",
-        type: VariableType = .int,
-        key: SwiftAttribute.Key? = nil,
-        declaration: Variable.Declaration = .mutable,
-        defaultValue: String? = nil
-    ) -> Variable {
-        Variable(
-            name: name,
-            type: type,
-            declaration: declaration,
-            attribute: .record(key: key, defaultValue: defaultValue)
-        )
+        private func createAttributedVariable(
+            name: String = "varName",
+            type: VariableType = .int,
+            key: SwiftAttribute.Key? = nil,
+            declaration: Variable.Declaration = .mutable,
+            defaultValue: String? = nil
+        ) -> Variable {
+            Variable(
+                name: name,
+                type: type,
+                declaration: declaration,
+                attribute: .record(key: key, defaultValue: defaultValue)
+            )
+        }
     }
-}
 #endif

@@ -1,9 +1,7 @@
 import Foundation
 
 extension UserDefaults {
-    static var userDefaultsClassName: String {
-        "UserDefaults"
-    }
+    static var userDefaultsClassName: String { "UserDefaults" }
 
     enum Name: CustomStringConvertible {
         case full(String)
@@ -17,26 +15,21 @@ extension UserDefaults {
                     return UserDefaults.standardName
                 }
                 return .shorten(String(shortName))
-            case .shorten:
-                return self
+            case .shorten: return self
             }
         }
 
         var asFullName: Name {
             switch self {
-            case .full:
-                return self
-            case .shorten(let shortName):
-                return .full("\(userDefaultsClassName).\(shortName)")
+            case .full: self
+            case .shorten(let shortName): .full("\(userDefaultsClassName).\(shortName)")
             }
         }
 
         var description: String {
             switch self {
-            case .full(let fullName):
-                return fullName
-            case .shorten(let shortName):
-                return ".\(shortName)"
+            case .full(let fullName): fullName
+            case .shorten(let shortName): ".\(shortName)"
             }
         }
     }

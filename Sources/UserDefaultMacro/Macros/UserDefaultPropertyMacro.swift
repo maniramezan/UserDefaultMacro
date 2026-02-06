@@ -4,7 +4,7 @@ import SwiftSyntaxMacros
 
 public struct UserDefaultPropertyMacro: AccessorMacro {
     static let attributeName = "UserDefaultProperty"
-    
+
     public static func expansion(
         of node: AttributeSyntax,
         providingAccessorsOf declaration: some DeclSyntaxProtocol,
@@ -15,6 +15,7 @@ public struct UserDefaultPropertyMacro: AccessorMacro {
             providingAccessorsOf: declaration,
             in: context,
             userDefaults: .parseFromParams,
-            skipRegisteringDefaultValue: false)
+            skipRegisteringDefaultValue: false
+        )
     }
 }

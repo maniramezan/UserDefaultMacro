@@ -1,24 +1,19 @@
 // swift-tools-version: 6.2
 
-import PackageDescription
 import CompilerPluginSupport
+import PackageDescription
 
 let package = Package(
     name: "UserDefaultMacro",
     platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
     products: [
-        .library(
-            name: "UserDefault",
-            targets: ["UserDefault"]
-        ),
-        .executable(
-            name: "UserDefaultClient",
-            targets: ["UserDefaultClient"]
-        ),
+        .library(name: "UserDefault", targets: ["UserDefault"]),
+        .executable(name: "UserDefaultClient", targets: ["UserDefaultClient"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "602.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0"),
         .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.4.5"),
+        .package(url: "https://github.com/apple/swift-format.git", exact: "602.0.0"),
     ],
     targets: [
         // Macro implementation that performs the source transformation of a macro.
@@ -42,10 +37,9 @@ let package = Package(
         .testTarget(
             name: "UserDefaultTests",
             dependencies: [
-                "UserDefaultMacro",
-                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+                "UserDefaultMacro", .product(name: "SwiftSyntaxMacroExpansion", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacrosGenericTestSupport", package: "swift-syntax"),
             ]
         ),
     ],
 )
-

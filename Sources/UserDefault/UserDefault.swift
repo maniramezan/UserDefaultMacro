@@ -1,6 +1,7 @@
 import Foundation
+
 #if canImport(UserDefaultMacro)
-import UserDefaultMacro
+    import UserDefaultMacro
 #endif
 
 /// # ``UserDefaultMacro``
@@ -36,14 +37,19 @@ import UserDefaultMacro
 ///   - userDefaults: Instance of `UserDefaults` to use. Defaults to `.standard`
 ///   - accessLevel: Access level of the generated `init`. Defaults to `.internal`
 #if canImport(UserDefaultMacro)
-@attached(member, names: named(userDefaults), named(init(userDefaults:)))
-@attached(memberAttribute)
-public macro UserDefaultDataStore(using userDefaults: UserDefaults = .standard, accessLevel: AccessLevel = .internal) = #externalMacro(module: "UserDefaultMacro", type: "UserDefaultDataStoreMacro")
+    @attached(member, names: named(userDefaults), named(init(userDefaults:)))
+    @attached(memberAttribute)
+    public macro UserDefaultDataStore(
+        using userDefaults: UserDefaults = .standard,
+        accessLevel: AccessLevel = .internal
+    ) = #externalMacro(module: "UserDefaultMacro", type: "UserDefaultDataStoreMacro")
 #endif
 
-/// Intended to be used on mutable properties with no body. This attribute relies on the type already attributed  by ``UserDefaultDataStore(using:accessLevel:)`` and   used on any mutable property with no body.
+/// Intended to be used on mutable properties with no body. This attribute relies on the type already attributed  by
+/// ``UserDefaultDataStore(using:accessLevel:)`` and   used on any mutable property with no body.
 ///
-/// This attribute allows overriding the key and default value when storing in `UserDefaults`. By default, it uses variable name and the default value returned by `UserDefaults` for the specified type. Following shows an example of how this can be used with `@UserDefaultDataStore`:
+/// This attribute allows overriding the key and default value when storing in `UserDefaults`. By default, it uses variable name and the default value returned
+/// by `UserDefaults` for the specified type. Following shows an example of how this can be used with `@UserDefaultDataStore`:
 /// ```swift
 /// @UserDefaultDataStore
 /// struct UserDefaultsStore {
@@ -85,11 +91,13 @@ public macro UserDefaultDataStore(using userDefaults: UserDefaults = .standard, 
 ///   - key: Key to use for storing this variable. Defaults to the name of the variable
 ///   - defaultValue: Default value to use when the variable is not set. Defaults to what `UserDefaults` method returns for this type
 @attached(accessor)
-public macro UserDefaultRecord<T>(key: String? = nil, defaultValue: T? = Void.self) = #externalMacro(module: "UserDefaultMacro", type: "UserDefaultRecordMacro")
+public macro UserDefaultRecord<T>(key: String? = nil, defaultValue: T? = Void.self) =
+    #externalMacro(module: "UserDefaultMacro", type: "UserDefaultRecordMacro")
 
 /// This attribute can be used on any mutable property with no body. This attribute creates the computational body needed to store the value in `UserDefaults`.
 ///
-/// Similar to ``UserDefaultRecord(key:defaultValue:)``, unless specified, it uses variable name as the key and no default value. `UserDefaults.standard` is the default storage unless defined as well. Following shows an example of how this can be used::
+/// Similar to ``UserDefaultRecord(key:defaultValue:)``, unless specified, it uses variable name as the key and no default value. `UserDefaults.standard` is the
+/// default storage unless defined as well. Following shows an example of how this can be used::
 /// ```swift
 /// extension UserDefaults {
 ///     static let test = UserDefaults(suiteName: "test")!
@@ -129,4 +137,8 @@ public macro UserDefaultRecord<T>(key: String? = nil, defaultValue: T? = Void.se
 ///   - key: Key to use for storing this variable. Defaults to the name of the variable
 ///   - defaultValue: Default value to use when the variable is not set. Defaults to what `UserDefaults` method returns for this type
 @attached(accessor)
-public macro UserDefaultProperty<T>(using userDefaults: UserDefaults = .standard, key: String? = nil, defaultValue: T? = Void.self) = #externalMacro(module: "UserDefaultMacro", type: "UserDefaultPropertyMacro")
+public macro UserDefaultProperty<T>(
+    using userDefaults: UserDefaults = .standard,
+    key: String? = nil,
+    defaultValue: T? = Void.self
+) = #externalMacro(module: "UserDefaultMacro", type: "UserDefaultPropertyMacro")

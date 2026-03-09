@@ -119,6 +119,60 @@ import Testing
             )
         }
 
+        @Test
+        func testExcludesNonPlistSafeTypesFromRegisterDefaults() {
+            let testMacrosWithRecord: [String: Macro.Type] = [
+                "UserDefaultDataStore": UserDefaultDataStoreMacro.self,
+                "UserDefaultRecord": UserDefaultRecordMacro.self,
+            ]
+            assertMacroExpansion(
+                """
+                @UserDefaultDataStore
+                struct Settings {
+                    @UserDefaultRecord(defaultValue: .dark, coding: .plist)
+                    var theme: Theme
+                    @UserDefaultRecord(defaultValue: 100)
+                    var volume: Int
+                }
+                """,
+                expandedSource: """
+                    struct Settings {
+                        var theme: Theme {
+                            get {
+                                guard let data = userDefaults.data(forKey: "theme"),
+                                      let value = try? PlistCoding().decode(Theme.self, from: data)
+                                else {
+                                    return .dark
+                                }
+                                return value
+                            }
+                            set {
+                                if let data = try? PlistCoding().encode(newValue) {
+                                    userDefaults.set(data, forKey: "theme")
+                                }
+                            }
+                        }
+                        var volume: Int {
+                            get {
+                                userDefaults.integer(forKey: "volume")
+                            }
+                            set {
+                                userDefaults.setValue(newValue, forKey: "volume")
+                            }
+                        }
+
+                        private let userDefaults: UserDefaults
+
+                        internal init(userDefaults: UserDefaults = .standard) {
+                            self.userDefaults = userDefaults
+                            userDefaults.register(defaults: ["volume": 100])
+                        }
+                    }
+                    """,
+                macros: testMacrosWithRecord
+            )
+        }
+
         // MARK: - Private methods
 
         private func originalSource(

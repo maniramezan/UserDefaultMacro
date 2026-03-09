@@ -61,7 +61,7 @@ swift package clean
 ### Code Formatting
 
 This project uses Apple's **swift-format** (integrated via SwiftPM plugin) for consistent code style:
-- Maximum line width: 160 characters
+- Maximum line width: 120 characters (see `.swift-format`)
 - Omit explicit `return` in single-expression functions
 - 4-space indentation
 - Single-line property getters
@@ -69,10 +69,14 @@ This project uses Apple's **swift-format** (integrated via SwiftPM plugin) for c
 
 Configuration is in `.swift-format` file (JSON format).
 
-**Before committing**, run:
+**IMPORTANT**: All new code must conform to `.swift-format` rules. When writing new code:
+1. Write it in compliance with the formatting rules from the start (preferred), OR
+2. After making changes, run the formatter before committing:
 ```bash
 swift package --allow-writing-to-package-directory format-source-code --recursive .
 ```
+
+**Never commit code that would fail** `swift package lint-source-code --recursive .`
 
 **No external installation required** - swift-format is included as a package dependency.
 

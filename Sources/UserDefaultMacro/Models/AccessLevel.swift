@@ -1,6 +1,6 @@
 import Foundation
 
-public enum AccessLevel: String {
+enum AccessLevel: String {
     case `public`
     case `private`
     case `internal`

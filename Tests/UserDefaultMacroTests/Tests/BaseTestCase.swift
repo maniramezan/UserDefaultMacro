@@ -21,11 +21,10 @@ import SwiftSyntaxMacros
 
         // MARK: - Helper methods
 
-        static func expandedPropertySource(for variable: Variable) -> String {
+        static func expandedPropertySource(for variable: Variable, codingExpression: String? = nil) -> String {
             let storageKey = variable.attribute?[.key]?.description ?? variable.name.withDoubleQuotes
 
             let defaultValue = variable.attribute?[.defaultValue]
-            let getterSuffixString = variable.type.castExpressionIfNeeded()
 
             let userDefaultsInstanceString: String
             if let userDefault = variable.attribute?[.userDefaults] {
@@ -39,6 +38,18 @@ import SwiftSyntaxMacros
             } else {
                 userDefaultsInstanceString = UserDefaults.standardFullName.description
             }
+
+            if !variable.type.isPlistSafe, let codingExpression {
+                return codableExpandedSource(
+                    for: variable,
+                    storageKey: storageKey,
+                    defaultValue: defaultValue,
+                    codingExpression: codingExpression,
+                    userDefaultsInstanceString: userDefaultsInstanceString
+                )
+            }
+
+            let getterSuffixString = variable.type.castExpressionIfNeeded()
 
             let registerDefaultValue =
                 if let defaultValue {
@@ -57,12 +68,23 @@ import SwiftSyntaxMacros
                 """
         }
 
-        static func expandedRecordSource(for variable: Variable) -> String {
+        static func expandedRecordSource(for variable: Variable, codingExpression: String? = nil) -> String {
             let storageKey = variable.attribute?[.key]?.description ?? variable.name.withDoubleQuotes
 
             let defaultValue = variable.attribute?[.defaultValue]
-            let getterSuffixString = variable.type.castExpressionIfNeeded()
             let userDefaultsInstanceString = UserDefaultDataStoreMacro.userDefaultsVariableName
+
+            if !variable.type.isPlistSafe, let codingExpression {
+                return codableExpandedSource(
+                    for: variable,
+                    storageKey: storageKey,
+                    defaultValue: defaultValue,
+                    codingExpression: codingExpression,
+                    userDefaultsInstanceString: userDefaultsInstanceString
+                )
+            }
+
+            let getterSuffixString = variable.type.castExpressionIfNeeded()
 
             return """
                 var \(variable.name): \(variable.type.swiftType) {
@@ -72,6 +94,69 @@ import SwiftSyntaxMacros
                     set {
                         \(userDefaultsInstanceString).setValue(newValue, forKey: \(storageKey))
                     }
+                }
+                """
+        }
+
+        // MARK: - Private helper for codable types
+
+        private static func codableExpandedSource(
+            for variable: Variable,
+            storageKey: String,
+            defaultValue: String?,
+            codingExpression: String,
+            userDefaultsInstanceString: String
+        ) -> String {
+            let ud = userDefaultsInstanceString
+            let isOptional: Bool
+            let innerTypeName: String
+
+            switch variable.type {
+            case .optional(let wrappedType):
+                isOptional = true
+                innerTypeName = wrappedType.swiftType
+            default:
+                isOptional = false
+                innerTypeName = variable.type.swiftType
+            }
+
+            let getter: String
+            if let defaultValue {
+                // register(defaults:) only accepts plist-safe values; for codable types
+                // we always return the default directly.
+                getter =
+                    "get {\n" + "        guard let data = \(ud).data(forKey: \(storageKey)),\n"
+                    + "              let value = try? \(codingExpression).decode(\(innerTypeName).self, from: data)\n"
+                    + "        else {\n" + "            return \(defaultValue)\n" + "        }\n"
+                    + "        return value\n" + "    }"
+            } else if isOptional {
+                getter =
+                    "get {\n" + "        guard let data = \(ud).data(forKey: \(storageKey)),\n"
+                    + "              let value = try? \(codingExpression).decode(\(innerTypeName).self, from: data)\n"
+                    + "        else {\n" + "            return nil\n" + "        }\n" + "        return value\n"
+                    + "    }"
+            } else {
+                getter =
+                    "get {\n" + "        let data = \(ud).data(forKey: \(storageKey))!\n"
+                    + "        return try! \(codingExpression).decode(\(innerTypeName).self, from: data)\n" + "    }"
+            }
+
+            let setter: String
+            if isOptional {
+                setter =
+                    "set {\n" + "        if let newValue, let data = try? \(codingExpression).encode(newValue) {\n"
+                    + "            \(ud).set(data, forKey: \(storageKey))\n" + "        } else {\n"
+                    + "            \(ud).removeObject(forKey: \(storageKey))\n" + "        }\n" + "    }"
+            } else {
+                setter =
+                    "set {\n" + "        if let data = try? \(codingExpression).encode(newValue) {\n"
+                    + "            \(ud).set(data, forKey: \(storageKey))\n" + "        }\n" + "    }"
+            }
+
+            return """
+                var \(variable.name): \(variable.type.swiftType) {
+                    \(getter)
+                    \(setter)
                 }
                 """
         }

@@ -262,5 +262,149 @@ import Testing
                 macros: testMacros
             )
         }
+        @Test
+        func testWarnsAndFallsBackForAutoAppliedRecordOnCustomType() {
+            let testMacrosWithRecord: [String: Macro.Type] = [
+                "UserDefaultDataStore": UserDefaultDataStoreMacro.self,
+                "UserDefaultRecord": UserDefaultRecordMacro.self,
+            ]
+            assertMacroExpansion(
+                """
+                @UserDefaultDataStore
+                struct AppSettings {
+                    var theme: Theme
+                }
+                """,
+                expandedSource: """
+                    struct AppSettings {
+                        var theme: Theme {
+                            get {
+                                userDefaults.object(forKey: "theme") as! Theme
+                            }
+                            set {
+                                userDefaults.setValue(newValue, forKey: "theme")
+                            }
+                        }
+
+                        private let userDefaults: UserDefaults
+
+                        internal init(userDefaults: UserDefaults = .standard) {
+                            self.userDefaults = userDefaults
+                        }
+                    }
+                    """,
+                diagnostics: [
+                    DiagnosticSpec(
+                        message: "'Theme' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
+                        line: 4,
+                        column: 5,
+                        severity: .warning,
+                        fixIts: [
+                            FixItSpec(message: "Add 'coding: .plist' to use Plist encoding"),
+                            FixItSpec(message: "Add '@UserDefaultRecord(coding: .plist)' to use Plist encoding"),
+                        ]
+                    )
+                ],
+                macros: testMacrosWithRecord
+            )
+        }
+
+        @Test
+        func testExpandsStoreWithCustomTypeAndCoding() {
+            assertMacroExpansion(
+                """
+                @UserDefaultDataStore
+                struct AppSettings {
+                    @UserDefaultRecord(defaultValue: .dark, coding: .plist)
+                    var theme: Theme
+                    var userName: String
+                }
+                """,
+                expandedSource: """
+                    struct AppSettings {
+                        var theme: Theme {
+                            get {
+                                guard let data = userDefaults.data(forKey: "theme"),
+                                      let value = try? PlistCoding().decode(Theme.self, from: data)
+                                else {
+                                    return .dark
+                                }
+                                return value
+                            }
+                            set {
+                                if let data = try? PlistCoding().encode(newValue) {
+                                    userDefaults.set(data, forKey: "theme")
+                                }
+                            }
+                        }
+                        var userName: String {
+                            get {
+                                userDefaults.string(forKey: "userName")!
+                            }
+                            set {
+                                userDefaults.setValue(newValue, forKey: "userName")
+                            }
+                        }
+
+                        private let userDefaults: UserDefaults
+
+                        internal init(userDefaults: UserDefaults = .standard) {
+                            self.userDefaults = userDefaults
+                        }
+                    }
+                    """,
+                macros: testMacros
+            )
+        }
+
+        @Test
+        func testExpandsStoreWithOptionalCustomType() {
+            assertMacroExpansion(
+                """
+                @UserDefaultDataStore
+                struct AppSettings {
+                    @UserDefaultRecord(coding: .json)
+                    var theme: Theme?
+                    var isEnabled: Bool
+                }
+                """,
+                expandedSource: """
+                    struct AppSettings {
+                        var theme: Theme? {
+                            get {
+                                guard let data = userDefaults.data(forKey: "theme"),
+                                      let value = try? JSONCoding().decode(Theme.self, from: data)
+                                else {
+                                    return nil
+                                }
+                                return value
+                            }
+                            set {
+                                if let newValue, let data = try? JSONCoding().encode(newValue) {
+                                    userDefaults.set(data, forKey: "theme")
+                                } else {
+                                    userDefaults.removeObject(forKey: "theme")
+                                }
+                            }
+                        }
+                        var isEnabled: Bool {
+                            get {
+                                userDefaults.bool(forKey: "isEnabled")
+                            }
+                            set {
+                                userDefaults.setValue(newValue, forKey: "isEnabled")
+                            }
+                        }
+
+                        private let userDefaults: UserDefaults
+
+                        internal init(userDefaults: UserDefaults = .standard) {
+                            self.userDefaults = userDefaults
+                        }
+                    }
+                    """,
+                macros: testMacros
+            )
+        }
     }
 #endif

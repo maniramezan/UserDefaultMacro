@@ -1,6 +1,20 @@
 import Foundation
 import UserDefault
 
-#if canImport(UserDefaultMacro)
-    extension UserDefaults { static let test = UserDefaults(suiteName: "test")! }
-#endif
+enum Theme: String, Codable {
+    case light
+    case dark
+}
+
+@UserDefaultDataStore
+struct AppSettings {
+    var isFirstLaunch: Bool
+
+    @UserDefaultRecord(defaultValue: 75)
+    var volume: Int
+
+    @UserDefaultRecord(defaultValue: Theme.dark, coding: .plist)
+    var theme: Theme
+
+    var optionalTheme: Theme?
+}

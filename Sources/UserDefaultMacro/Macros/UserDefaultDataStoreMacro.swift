@@ -27,7 +27,10 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
         let accessLevel = labeledArgs?.extractAccessLevelParam() ?? .internal
 
         let registrations = defaultValueRegistrations(from: declaration)
-        let registerStatement = registrationStatement(from: registrations, userDefaultsVariable: userDefaultsVariableName)
+        let registerStatement = registrationStatement(
+            from: registrations,
+            userDefaultsVariable: userDefaultsVariableName
+        )
 
         return [
             "private let \(raw: userDefaultsVariableName): \(raw: UserDefaults.userDefaultsClassName)",
@@ -65,28 +68,29 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
     /// Collects (key, defaultValue) pairs for all `@UserDefaultRecord`-annotated mutable variables
     /// that have a `defaultValue:` and a plist-safe type. Non-plist-safe types are excluded because
     /// `UserDefaults.register(defaults:)` cannot store them directly.
-    private static func defaultValueRegistrations(from declaration: some DeclGroupSyntax) -> [(key: String, value: String)] {
-        let mutableVars = declaration.memberBlock.members
-            .compactMap { $0.decl.as(VariableDeclSyntax.self) }
-            .filter { $0.bindingSpecifier.tokenKind == .keyword(.var) }
-
-        return mutableVars.compactMap { variableDecl in
-            defaultValueRegistration(from: variableDecl)
+    private static func defaultValueRegistrations(from declaration: some DeclGroupSyntax) -> [(
+        key: String, value: String
+    )] {
+        let mutableVars = declaration.memberBlock.members.compactMap { $0.decl.as(VariableDeclSyntax.self) }.filter {
+            $0.bindingSpecifier.tokenKind == .keyword(.var)
         }
+
+        return mutableVars.compactMap { variableDecl in defaultValueRegistration(from: variableDecl) }
     }
 
-    private static func defaultValueRegistration(from variableDecl: VariableDeclSyntax) -> (key: String, value: String)? {
-        guard
-            let attr = variableDecl.attributes.attributeSyntax(named: UserDefaultRecordMacro.attributeName),
+    private static func defaultValueRegistration(from variableDecl: VariableDeclSyntax) -> (key: String, value: String)?
+    {
+        guard let attr = variableDecl.attributes.attributeSyntax(named: UserDefaultRecordMacro.attributeName),
             let labeledArgs = attr.arguments?.as(LabeledExprListSyntax.self),
             let defaultValue = labeledArgs.extractDefaultValueParam()
         else { return nil }
 
         // Only plist-safe types can be registered — custom types would crash at runtime.
         if let typeAnnotation = variableDecl.bindings.first?.typeAnnotation,
-            let variableType = try? VariableType(from: typeAnnotation.type),
-            !variableType.isPlistSafe
-        { return nil }
+            let variableType = try? VariableType(from: typeAnnotation.type), !variableType.isPlistSafe
+        {
+            return nil
+        }
 
         guard let identifier = variableDecl.bindings.compactMap({ $0.pattern.as(IdentifierPatternSyntax.self) }).first
         else { return nil }
@@ -95,7 +99,10 @@ public struct UserDefaultDataStoreMacro: MemberMacro, MemberAttributeMacro {
         return (key, defaultValue)
     }
 
-    private static func registrationStatement(from registrations: [(key: String, value: String)], userDefaultsVariable: String) -> String {
+    private static func registrationStatement(
+        from registrations: [(key: String, value: String)],
+        userDefaultsVariable: String
+    ) -> String {
         guard !registrations.isEmpty else { return "" }
         let pairs = registrations.map { "\($0.key): \($0.value)" }.joined(separator: ", ")
         return "\n\(userDefaultsVariable).register(defaults: [\(pairs)])"

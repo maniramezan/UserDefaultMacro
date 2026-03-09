@@ -19,7 +19,8 @@ import Testing
                     ? []
                     : [
                         DiagnosticSpec(
-                            message: "'\(item.swiftType)' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
+                            message:
+                                "'\(item.swiftType)' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
                             line: 2,
                             column: 1,
                             severity: .warning,
@@ -42,7 +43,8 @@ import Testing
                     ? []
                     : [
                         DiagnosticSpec(
-                            message: "'\(item.swiftType)?' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
+                            message:
+                                "'\(item.swiftType)?' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
                             line: 2,
                             column: 1,
                             severity: .warning,
@@ -147,7 +149,8 @@ import Testing
                 expandedSource: BaseTestCase.expandedRecordSource(for: variable),
                 diagnostics: [
                     DiagnosticSpec(
-                        message: "'Theme?' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
+                        message:
+                            "'Theme?' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
                         line: 2,
                         column: 1,
                         severity: .warning,
@@ -183,7 +186,8 @@ import Testing
                 expandedSource: "var theme: Theme",
                 diagnostics: [
                     DiagnosticSpec(
-                        message: "Shorthand coding syntax '.custom' cannot be resolved without type context in the generated accessor. Use the fully-qualified type instead (e.g., 'MyCoding.custom').",
+                        message:
+                            "Shorthand coding syntax '.custom' cannot be resolved without type context in the generated accessor. Use the fully-qualified type instead (e.g., 'MyCoding.custom').",
                         line: 1,
                         column: 1,
                         severity: .error

@@ -295,7 +295,8 @@ import Testing
                     """,
                 diagnostics: [
                     DiagnosticSpec(
-                        message: "'Theme' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
+                        message:
+                            "'Theme' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
                         line: 4,
                         column: 5,
                         severity: .warning,

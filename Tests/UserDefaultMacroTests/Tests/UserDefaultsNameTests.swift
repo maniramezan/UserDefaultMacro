@@ -52,14 +52,10 @@ import Testing
         // MARK: - Static properties
 
         @Test
-        func testStandardName() {
-            #expect(UserDefaults.standardName == .shorten("standard"))
-        }
+        func testStandardName() { #expect(UserDefaults.standardName == .shorten("standard")) }
 
         @Test
-        func testStandardFullName() {
-            #expect(UserDefaults.standardFullName == .full("UserDefaults.standard"))
-        }
+        func testStandardFullName() { #expect(UserDefaults.standardFullName == .full("UserDefaults.standard")) }
     }
 
     extension UserDefaults.Name: Equatable {

@@ -48,7 +48,10 @@ extension AccessorMacro {
 
     // MARK: - Argument parsing
 
-    private static func resolveUserDefaultsString(from labeledArgs: LabeledExprListSyntax?, userDefaults: UserDefaultsType) -> String {
+    private static func resolveUserDefaultsString(
+        from labeledArgs: LabeledExprListSyntax?,
+        userDefaults: UserDefaultsType
+    ) -> String {
         switch userDefaults {
         case .use(let string): string
         case .parseFromParams: labeledArgs?.extractUserDefaultsParam() ?? UserDefaults.standardFullName.description
@@ -57,7 +60,9 @@ extension AccessorMacro {
 
     // MARK: - Variable extraction
 
-    private static func extractVariableInfo(from variableDecl: VariableDeclSyntax) throws -> (name: String, type: VariableType) {
+    private static func extractVariableInfo(from variableDecl: VariableDeclSyntax) throws -> (
+        name: String, type: VariableType
+    ) {
         guard variableDecl.bindings.count == 1 else { throw UserDefaultMacroError.multipleVariableDeclaration }
 
         guard let patternBinding = variableDecl.bindings.first,
@@ -223,7 +228,12 @@ extension AccessorMacro {
                     ),
                     FixIt(
                         message: AddExplicitRecordWithCodingFixIt(),
-                        changes: [.replace(oldNode: Syntax(variableDecl), newNode: Syntax(addExplicitRecord(to: variableDecl)))]
+                        changes: [
+                            .replace(
+                                oldNode: Syntax(variableDecl),
+                                newNode: Syntax(addExplicitRecord(to: variableDecl))
+                            )
+                        ]
                     ),
                 ]
             )
@@ -245,15 +255,16 @@ extension AccessorMacro {
         if let existingArgs = node.arguments?.as(LabeledExprListSyntax.self), !existingArgs.isEmpty {
             var arr = Array(existingArgs)
             arr[arr.index(before: arr.endIndex)] = arr[arr.index(before: arr.endIndex)].with(
-                \.trailingComma, .commaToken(trailingTrivia: .space)
+                \.trailingComma,
+                .commaToken(trailingTrivia: .space)
             )
             arr.append(codingArg)
             return node.with(\.arguments, .argumentList(LabeledExprListSyntax(arr)))
         } else {
-            return node
-                .with(\.leftParen, .leftParenToken())
-                .with(\.arguments, .argumentList(LabeledExprListSyntax([codingArg])))
-                .with(\.rightParen, .rightParenToken())
+            return node.with(\.leftParen, .leftParenToken()).with(
+                \.arguments,
+                .argumentList(LabeledExprListSyntax([codingArg]))
+            ).with(\.rightParen, .rightParenToken())
         }
     }
 
@@ -269,19 +280,22 @@ extension AccessorMacro {
         // Move the original leading trivia (newline + indent) to the new attribute.
         // The var keyword then keeps only the indentation (no leading newline).
         let leadingTrivia = declaration.leadingTrivia
-        let indentTrivia = Trivia(pieces: leadingTrivia.pieces.filter {
-            if case .spaces = $0 { return true }
-            if case .tabs = $0 { return true }
-            return false
-        })
+        let indentTrivia = Trivia(
+            pieces: leadingTrivia.pieces.filter {
+                if case .spaces = $0 { return true }
+                if case .tabs = $0 { return true }
+                return false
+            }
+        )
         let attrElement = AttributeListSyntax.Element.attribute(
             recordAttr.with(\.leadingTrivia, leadingTrivia).with(\.trailingTrivia, .newline)
         )
         var newAttrs = Array(declaration.attributes)
         newAttrs.insert(attrElement, at: 0)
-        return declaration
-            .with(\.attributes, AttributeListSyntax(newAttrs))
-            .with(\.bindingSpecifier, declaration.bindingSpecifier.with(\.leadingTrivia, indentTrivia))
+        return declaration.with(\.attributes, AttributeListSyntax(newAttrs)).with(
+            \.bindingSpecifier,
+            declaration.bindingSpecifier.with(\.leadingTrivia, indentTrivia)
+        )
     }
 }
 

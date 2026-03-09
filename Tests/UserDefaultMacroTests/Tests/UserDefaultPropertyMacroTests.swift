@@ -21,7 +21,8 @@ import Testing
                     ? []
                     : [
                         DiagnosticSpec(
-                            message: "'\(item.swiftType)' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
+                            message:
+                                "'\(item.swiftType)' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
                             line: 2,
                             column: 1,
                             severity: .warning,
@@ -44,7 +45,8 @@ import Testing
                     ? []
                     : [
                         DiagnosticSpec(
-                            message: "'\(item.swiftType)?' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
+                            message:
+                                "'\(item.swiftType)?' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
                             line: 2,
                             column: 1,
                             severity: .warning,
@@ -181,7 +183,8 @@ import Testing
                 expandedSource: BaseTestCase.expandedPropertySource(for: variable),
                 diagnostics: [
                     DiagnosticSpec(
-                        message: "'Theme?' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
+                        message:
+                            "'Theme?' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
                         line: 2,
                         column: 1,
                         severity: .warning,

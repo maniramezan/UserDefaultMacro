@@ -34,10 +34,7 @@ import Testing
                 attributeName: "UserDefaultDataStore",
                 modelDescription: "SomeModel"
             )
-            #expect(
-                error.description
-                    == "Expected attribute 'UserDefaultDataStore' was not found on: SomeModel"
-            )
+            #expect(error.description == "Expected attribute 'UserDefaultDataStore' was not found on: SomeModel")
         }
 
         @Test
@@ -52,10 +49,7 @@ import Testing
         @Test
         func testFailedRetrieveVariableTypeNameDescription() {
             let error = UserDefaultMacroError.failedRetrieveVariableTypeName(typeSyntaxDescription: "SomeType")
-            #expect(
-                error.description
-                    == "Failed to parse property type. Unsupported type syntax: SomeType"
-            )
+            #expect(error.description == "Failed to parse property type. Unsupported type syntax: SomeType")
         }
 
         @Test

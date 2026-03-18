@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-indirect enum VariableType: CaseIterable {
+indirect enum VariableType: CaseIterable, Sendable {
     static let allCases: [VariableType] = [
         .int, .double, .float, .bool, .string, .url, .data, .date, .array(elementType: .int),
         .dictionary(keyType: .int, valueType: .int), .object(entityTypeName: "SomeEntityName"),

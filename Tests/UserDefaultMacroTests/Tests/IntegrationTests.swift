@@ -34,7 +34,7 @@ import Testing
                                 userDefaults.bool(forKey: "isFirstLaunch")
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "isFirstLaunch")
+                                userDefaults.set(newValue, forKey: "isFirstLaunch")
                             }
                         }
                         var userName: String {
@@ -42,7 +42,7 @@ import Testing
                                 userDefaults.string(forKey: "userName")!
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "userName")
+                                userDefaults.set(newValue, forKey: "userName")
                             }
                         }
                         var loginCount: Int {
@@ -50,7 +50,7 @@ import Testing
                                 userDefaults.integer(forKey: "loginCount")
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "loginCount")
+                                userDefaults.set(newValue, forKey: "loginCount")
                             }
                         }
 
@@ -84,7 +84,7 @@ import Testing
                                 userDefaults.string(forKey: "difficulty")!
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "difficulty")
+                                userDefaults.set(newValue, forKey: "difficulty")
                             }
                         }
                         var volume: Int {
@@ -92,7 +92,7 @@ import Testing
                                 userDefaults.integer(forKey: "volume")
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "volume")
+                                userDefaults.set(newValue, forKey: "volume")
                             }
                         }
 
@@ -126,7 +126,7 @@ import Testing
                                 userDefaults.string(forKey: "user_name")!
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "user_name")
+                                userDefaults.set(newValue, forKey: "user_name")
                             }
                         }
                         var email: String {
@@ -134,7 +134,7 @@ import Testing
                                 userDefaults.string(forKey: "email")!
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "email")
+                                userDefaults.set(newValue, forKey: "email")
                             }
                         }
 
@@ -165,7 +165,7 @@ import Testing
                                 userDefaults.string(forKey: "apiKey")!
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "apiKey")
+                                userDefaults.set(newValue, forKey: "apiKey")
                             }
                         }
 
@@ -202,7 +202,7 @@ import Testing
                                 userDefaults.integer(forKey: "storedValue")
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "storedValue")
+                                userDefaults.set(newValue, forKey: "storedValue")
                             }
                         }
 
@@ -240,7 +240,7 @@ import Testing
                                 userDefaults.string(forKey: "optionalString")
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "optionalString")
+                                userDefaults.set(newValue, forKey: "optionalString")
                             }
                         }
                         var optionalInt: Int? {
@@ -248,7 +248,7 @@ import Testing
                                 userDefaults.object(forKey: "optionalInt") as? Int
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "optionalInt")
+                                userDefaults.set(newValue, forKey: "optionalInt")
                             }
                         }
 
@@ -282,7 +282,7 @@ import Testing
                                 userDefaults.object(forKey: "theme") as! Theme
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "theme")
+                                userDefaults.set(newValue, forKey: "theme")
                             }
                         }
 
@@ -343,7 +343,7 @@ import Testing
                                 userDefaults.string(forKey: "userName")!
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "userName")
+                                userDefaults.set(newValue, forKey: "userName")
                             }
                         }
 
@@ -393,7 +393,7 @@ import Testing
                                 userDefaults.bool(forKey: "isEnabled")
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "isEnabled")
+                                userDefaults.set(newValue, forKey: "isEnabled")
                             }
                         }
 

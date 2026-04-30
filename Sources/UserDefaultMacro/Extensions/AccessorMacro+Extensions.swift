@@ -24,7 +24,7 @@ extension AccessorMacro {
         let (variableName, variableType) = try extractVariableInfo(from: variableDecl)
         let key = userDefinedKey ?? variableName.withDoubleQuotes
 
-        if !variableType.isPlistSafe {
+        if variableType.needsCoding {
             if let codingExpression {
                 return codableAccessors(
                     variableType: variableType,
@@ -89,17 +89,20 @@ extension AccessorMacro {
         skipRegistering: Bool,
         userDefaultsString: String
     ) -> [AccessorDeclSyntax] {
-        let registerPrefix: String
-        if !skipRegistering, let defaultValue {
-            registerPrefix = "\(userDefaultsString).register(defaults: [\(key): \(defaultValue)])\nreturn "
+        let methodCall = "\(userDefaultsString).\(variableType.userDefaultsMethodName)(forKey: \(key))"
+
+        let getterBody: String
+        if case .url = variableType, let defaultValue {
+            // URL isn't plist-safe and can't be registered. Use ?? fallback instead of force-unwrap.
+            getterBody = "\(methodCall) ?? \(defaultValue)"
+        } else if !skipRegistering, let defaultValue, variableType.isPlistSafe {
+            getterBody =
+                "\(userDefaultsString).register(defaults: [\(key): \(defaultValue)])\nreturn \(methodCall)\(variableType.castExpressionIfNeeded())"
         } else {
-            registerPrefix = ""
+            getterBody = "\(methodCall)\(variableType.castExpressionIfNeeded())"
         }
-        let castSuffix = variableType.castExpressionIfNeeded()
-        return [
-            "get { \(raw: registerPrefix)\(raw: userDefaultsString).\(raw: variableType.userDefaultsMethodName)(forKey: \(raw: key))\(raw: castSuffix) }",
-            "set { \(raw: userDefaultsString).setValue(newValue, forKey: \(raw: key)) }",
-        ]
+
+        return ["get { \(raw: getterBody) }", "set { \(raw: userDefaultsString).set(newValue, forKey: \(raw: key)) }"]
     }
 
     private static func codableAccessors(

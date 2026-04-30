@@ -62,7 +62,7 @@ import SwiftSyntaxMacros
                         \(registerDefaultValue)\(userDefaultsInstanceString).\(variable.type.userDefaultsMethodName)(forKey: \(storageKey))\(getterSuffixString)
                     }
                     set {
-                        \(userDefaultsInstanceString).setValue(newValue, forKey: \(storageKey))
+                        \(userDefaultsInstanceString).set(newValue, forKey: \(storageKey))
                     }
                 }
                 """
@@ -92,7 +92,7 @@ import SwiftSyntaxMacros
                         \(userDefaultsInstanceString).\(variable.type.userDefaultsMethodName)(forKey: \(storageKey))\(getterSuffixString)
                     }
                     set {
-                        \(userDefaultsInstanceString).setValue(newValue, forKey: \(storageKey))
+                        \(userDefaultsInstanceString).set(newValue, forKey: \(storageKey))
                     }
                 }
                 """

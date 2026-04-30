@@ -15,9 +15,8 @@ import Testing
             for item in VariableType.allCases {
                 let variable = createAttributedVariable(name: "varName", type: item)
                 let diagnostics: [DiagnosticSpec] =
-                    item.isPlistSafe
-                    ? []
-                    : [
+                    item.needsCoding
+                    ? [
                         DiagnosticSpec(
                             message:
                                 "'\(item.swiftType)' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
@@ -29,7 +28,7 @@ import Testing
                                 FixItSpec(message: "Add '@UserDefaultRecord(coding: .plist)' to use Plist encoding"),
                             ]
                         )
-                    ]
+                    ] : []
                 assertMacroExpansion(
                     variable.description,
                     expandedSource: BaseTestCase.expandedRecordSource(for: variable),
@@ -39,9 +38,8 @@ import Testing
 
                 let optionalVariable = createAttributedVariable(name: "varName", type: .optional(wrappedType: item))
                 let optionalDiagnostics: [DiagnosticSpec] =
-                    item.isPlistSafe
-                    ? []
-                    : [
+                    item.needsCoding
+                    ? [
                         DiagnosticSpec(
                             message:
                                 "'\(item.swiftType)?' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
@@ -53,7 +51,7 @@ import Testing
                                 FixItSpec(message: "Add '@UserDefaultRecord(coding: .plist)' to use Plist encoding"),
                             ]
                         )
-                    ]
+                    ] : []
                 assertMacroExpansion(
                     optionalVariable.description,
                     expandedSource: BaseTestCase.expandedRecordSource(for: optionalVariable),
@@ -163,6 +161,54 @@ import Testing
                 macros: testMacros,
                 applyFixIts: ["Add 'coding: .plist' to use Plist encoding"],
                 fixedSource: "@UserDefaultRecord(coding: .plist)\nvar theme: Theme?"
+            )
+        }
+
+        // MARK: - URL Tests
+
+        @Test
+        func testExpandsRecordWithURLDefaultValueUsesNilCoalescingFallback() {
+            // URL is not plist-safe, so it can't be registered in init. The macro should
+            // emit a `?? defaultValue` fallback in the getter instead of force-unwrapping.
+            assertMacroExpansion(
+                """
+                @UserDefaultRecord(defaultValue: URL(string: "https://example.com")!)
+                var endpoint: URL
+                """,
+                expandedSource: """
+                    var endpoint: URL {
+                        get {
+                            userDefaults.url(forKey: "endpoint") ?? URL(string: "https://example.com")!
+                        }
+                        set {
+                            userDefaults.set(newValue, forKey: "endpoint")
+                        }
+                    }
+                    """,
+                macros: testMacros
+            )
+        }
+
+        @Test
+        func testExpandsRecordWithURLNoDefaultRetainsForceUnwrap() {
+            // Without a default, non-optional URL still force-unwraps — caller opted into that
+            // behavior via the type annotation, matching String/Data/Date semantics.
+            assertMacroExpansion(
+                """
+                @UserDefaultRecord
+                var endpoint: URL
+                """,
+                expandedSource: """
+                    var endpoint: URL {
+                        get {
+                            userDefaults.url(forKey: "endpoint")!
+                        }
+                        set {
+                            userDefaults.set(newValue, forKey: "endpoint")
+                        }
+                    }
+                    """,
+                macros: testMacros
             )
         }
 

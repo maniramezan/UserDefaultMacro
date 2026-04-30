@@ -24,11 +24,11 @@ jobs:
       contents: read
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
         with:
           fetch-depth: 0
       - name: Cache SwiftPM + Swiftly
-        uses: actions/cache@v4
+        uses: actions/cache@v5.0.5
         with:
           path: |
             .build
@@ -37,19 +37,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-swift-${{ env.SWIFT_VERSION }}-
       - name: Setup Swift
-        uses: swift-actions/setup-swift@v2
+        uses: swift-actions/setup-swift@v2.4.0
         with:
           swift-version: "${{ env.SWIFT_VERSION }}"
-      
+
       - name: Verify Swift
         run: swift --version
       - name: Run Build Docs
         run: ./build-docc.sh
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v6.0.0
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5.0.0
         with:
           path: .docs
           name: github-pages
@@ -66,4 +66,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5.0.0

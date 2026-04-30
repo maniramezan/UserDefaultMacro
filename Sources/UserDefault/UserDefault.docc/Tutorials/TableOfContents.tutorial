@@ -1,0 +1,14 @@
+<!-- swift-format-ignore-file -->
+@Tutorials(name: "UserDefault") {
+    @Intro(title: "Meet UserDefault") {
+        Build a fully-featured settings store with macros instead of hand-written `UserDefaults` accessors.
+    }
+
+    @Chapter(name: "Build a Settings Store") {
+        @Image(source: "build-settings-store-cover.png", alt: "UserDefault tutorial cover image.")
+
+        Start from an empty struct and grow a settings store that handles primitives, custom types, and a custom suite — all with a few lines of code.
+
+        @TutorialReference(tutorial: "doc:BuildSettingsStore")
+    }
+}

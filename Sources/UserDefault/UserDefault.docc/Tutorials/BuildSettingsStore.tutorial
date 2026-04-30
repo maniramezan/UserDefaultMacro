@@ -1,0 +1,70 @@
+<!-- swift-format-ignore-file -->
+@Tutorial(time: 10) {
+    @Intro(title: "Build a Settings Store") {
+        Take an empty `struct`, attach `@UserDefaultDataStore`, and grow it into a real settings store that persists primitives, a custom enum, and a value sourced from an App Group suite.
+
+        By the end you'll have a type whose entire implementation is the property declarations themselves — every accessor and the initializer come from macros.
+    }
+
+    @Section(title: "Declare the data store") {
+        @ContentAndMedia {
+            Start with a plain `struct`. Adding `@UserDefaultDataStore` synthesizes the storage and initializer; you don't write either by hand.
+        }
+
+        @Steps {
+            @Step {
+                Create an empty `struct` for your app's settings.
+                @Code(name: "AppSettings.swift", file: "BuildSettingsStore-1.swift")
+            }
+
+            @Step {
+                Attach `@UserDefaultDataStore`. The macro generates a `private let userDefaults: UserDefaults` and an `init(userDefaults: UserDefaults = .standard)` for you.
+                @Code(name: "AppSettings.swift", file: "BuildSettingsStore-2.swift")
+            }
+        }
+    }
+
+    @Section(title: "Add stored properties") {
+        @ContentAndMedia {
+            Mutable, body-less, initializer-less stored properties are automatically marked `@UserDefaultRecord`. Each gets the right native `UserDefaults` accessor for its type.
+        }
+
+        @Steps {
+            @Step {
+                Add a `Bool` and an `Int`. `@UserDefaultDataStore` auto-applies `@UserDefaultRecord` to both, generating `bool(forKey:)` and `integer(forKey:)` accessors.
+                @Code(name: "AppSettings.swift", file: "BuildSettingsStore-3.swift")
+            }
+
+            @Step {
+                Provide a `defaultValue:` to register an initial value. The macro registers it once, in `init`, via `UserDefaults.register(defaults:)`.
+                @Code(name: "AppSettings.swift", file: "BuildSettingsStore-4.swift")
+            }
+        }
+    }
+
+    @Section(title: "Persist a custom enum") {
+        @ContentAndMedia {
+            Custom `Codable` types need a `coding:` strategy because `UserDefaults` only natively stores property-list values. The macro emits a warning and a fix-it if you forget.
+        }
+
+        @Steps {
+            @Step {
+                Add a `Theme` enum and store it with `coding: .plist`. The generated getter falls back to the default if no value is stored or decoding fails.
+                @Code(name: "AppSettings.swift", file: "BuildSettingsStore-5.swift")
+            }
+        }
+    }
+
+    @Section(title: "Use a custom suite") {
+        @ContentAndMedia {
+            Pass a different `UserDefaults` instance — for example, one backed by an App Group suite — by overriding the macro's `using:` parameter.
+        }
+
+        @Steps {
+            @Step {
+                Define a shared suite in an extension, then point `@UserDefaultDataStore(using:)` at it. The synthesized initializer's default value updates to the new suite, and instances can still inject a different one in tests.
+                @Code(name: "AppSettings.swift", file: "BuildSettingsStore-6.swift")
+            }
+        }
+    }
+}

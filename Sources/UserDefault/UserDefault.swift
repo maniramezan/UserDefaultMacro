@@ -58,7 +58,7 @@ public macro UserDefaultDataStore(using userDefaults: UserDefaults = .standard, 
 ///     @UserDefaultRecord(key: "isInitialLaunch", defaultValue: true)
 ///     var isFirstTimeLaunching: Bool {
 ///         get { userDefaults.bool(forKey: "isInitialLaunch") }
-///         set { userDefaults.setValue(newValue, forKey: "isInitialLaunch") }
+///         set { userDefaults.set(newValue, forKey: "isInitialLaunch") }
 ///     }
 ///
 ///     private let userDefaults: UserDefaults
@@ -135,7 +135,7 @@ public macro UserDefaultRecord<T, C: UserDefaultsCoding>(key: String? = nil, def
 ///         return UserDefaults.test.string(forKey: Self.key)!
 ///     }
 ///     set {
-///         UserDefaults.test.setValue(newValue, forKey: Self.key)
+///         UserDefaults.test.set(newValue, forKey: Self.key)
 ///     }
 /// }
 /// ```

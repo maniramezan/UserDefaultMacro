@@ -17,9 +17,8 @@ import Testing
             for item in VariableType.allCases {
                 let variable = createAttributedVariable(name: "varName", type: item)
                 let diagnostics: [DiagnosticSpec] =
-                    item.isPlistSafe
-                    ? []
-                    : [
+                    item.needsCoding
+                    ? [
                         DiagnosticSpec(
                             message:
                                 "'\(item.swiftType)' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
@@ -31,7 +30,7 @@ import Testing
                                 FixItSpec(message: "Add '@UserDefaultRecord(coding: .plist)' to use Plist encoding"),
                             ]
                         )
-                    ]
+                    ] : []
                 assertMacroExpansion(
                     variable.description,
                     expandedSource: BaseTestCase.expandedPropertySource(for: variable),
@@ -41,9 +40,8 @@ import Testing
 
                 let optionalVariable = createAttributedVariable(name: "varName", type: .optional(wrappedType: item))
                 let optionalDiagnostics: [DiagnosticSpec] =
-                    item.isPlistSafe
-                    ? []
-                    : [
+                    item.needsCoding
+                    ? [
                         DiagnosticSpec(
                             message:
                                 "'\(item.swiftType)?' is not directly storable in UserDefaults. Add a 'coding:' parameter to specify Codable encoding/decoding strategy, or ensure the type conforms to NSCoding.",
@@ -55,7 +53,7 @@ import Testing
                                 FixItSpec(message: "Add '@UserDefaultRecord(coding: .plist)' to use Plist encoding"),
                             ]
                         )
-                    ]
+                    ] : []
                 assertMacroExpansion(
                     optionalVariable.description,
                     expandedSource: BaseTestCase.expandedPropertySource(for: optionalVariable),
@@ -197,6 +195,31 @@ import Testing
                 macros: testMacros,
                 applyFixIts: ["Add 'coding: .plist' to use Plist encoding"],
                 fixedSource: "@UserDefaultProperty(coding: .plist)\nvar theme: Theme?"
+            )
+        }
+
+        // MARK: - URL Tests
+
+        @Test
+        func testExpandsPropertyWithURLDefaultValueUsesNilCoalescingFallback() {
+            // URL is not plist-safe; the macro emits a `?? defaultValue` fallback in the getter
+            // rather than calling `register(defaults:)` (which would reject the non-plist value).
+            assertMacroExpansion(
+                """
+                @UserDefaultProperty(defaultValue: URL(string: "https://example.com")!)
+                var endpoint: URL
+                """,
+                expandedSource: """
+                    var endpoint: URL {
+                        get {
+                            UserDefaults.standard.url(forKey: "endpoint") ?? URL(string: "https://example.com")!
+                        }
+                        set {
+                            UserDefaults.standard.set(newValue, forKey: "endpoint")
+                        }
+                    }
+                    """,
+                macros: testMacros
             )
         }
 

@@ -237,6 +237,22 @@ The macros natively support these types with optimized `UserDefaults` methods:
 
 All primitive types can be optional (e.g., `String?`, `Int?`). Optional types return `nil` when no value is stored.
 
+### `URL` Storage
+
+`URL` is stored via `UserDefaults.set(_:URL?, forKey:)` and read via `url(forKey:)`, which round-trips through `NSKeyedArchiver`. Because `URL` is *not* a property-list type, it cannot be passed to `register(defaults:)`. When you supply a `defaultValue:` for a non-optional `URL`, the generated getter falls back to it via `??` instead:
+
+```swift
+@UserDefaultDataStore
+struct API {
+    @UserDefaultRecord(defaultValue: URL(string: "https://api.example.com")!)
+    var endpoint: URL
+}
+```
+Generated getter:
+```swift
+userDefaults.url(forKey: "endpoint") ?? URL(string: "https://api.example.com")!
+```
+
 ### Custom Types
 
 Custom types (classes, structs, enums) are supported through `UserDefaults`' `object(forKey:)` method, which requires types to conform to:

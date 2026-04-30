@@ -157,7 +157,56 @@ import Testing
                                 userDefaults.integer(forKey: "volume")
                             }
                             set {
-                                userDefaults.setValue(newValue, forKey: "volume")
+                                userDefaults.set(newValue, forKey: "volume")
+                            }
+                        }
+
+                        private let userDefaults: UserDefaults
+
+                        internal init(userDefaults: UserDefaults = .standard) {
+                            self.userDefaults = userDefaults
+                            userDefaults.register(defaults: ["volume": 100])
+                        }
+                    }
+                    """,
+                macros: testMacrosWithRecord
+            )
+        }
+
+        @Test
+        func testExcludesURLFromRegisterDefaultsAndUsesGetterFallback() {
+            // URL isn't a property-list type, so it's excluded from `register(defaults:)`.
+            // Non-optional URL with a default falls back via `??` in the getter instead.
+            let testMacrosWithRecord: [String: Macro.Type] = [
+                "UserDefaultDataStore": UserDefaultDataStoreMacro.self,
+                "UserDefaultRecord": UserDefaultRecordMacro.self,
+            ]
+            assertMacroExpansion(
+                """
+                @UserDefaultDataStore
+                struct Settings {
+                    @UserDefaultRecord(defaultValue: URL(string: "https://example.com")!)
+                    var endpoint: URL
+                    @UserDefaultRecord(defaultValue: 100)
+                    var volume: Int
+                }
+                """,
+                expandedSource: """
+                    struct Settings {
+                        var endpoint: URL {
+                            get {
+                                userDefaults.url(forKey: "endpoint") ?? URL(string: "https://example.com")!
+                            }
+                            set {
+                                userDefaults.set(newValue, forKey: "endpoint")
+                            }
+                        }
+                        var volume: Int {
+                            get {
+                                userDefaults.integer(forKey: "volume")
+                            }
+                            set {
+                                userDefaults.set(newValue, forKey: "volume")
                             }
                         }
 

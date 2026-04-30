@@ -1,7 +1,7 @@
 import Foundation
 import SwiftSyntax
 
-indirect enum VariableType: CaseIterable {
+indirect enum VariableType: CaseIterable, Sendable {
     static let allCases: [VariableType] = [
         .int, .double, .float, .bool, .string, .url, .data, .date, .array(elementType: .int),
         .dictionary(keyType: .int, valueType: .int), .object(entityTypeName: "SomeEntityName"),
@@ -65,11 +65,29 @@ indirect enum VariableType: CaseIterable {
 
     var isPlistSafe: Bool {
         switch self {
-        case .int, .double, .float, .bool, .string, .data, .url, .date: true
+        case .int, .double, .float, .bool, .string, .data, .date: true
+        // URL is not a property-list type. `UserDefaults.set(_:URL?, forKey:)` archives it as
+        // Data, but `register(defaults:)` rejects non-plist values. Excluding URL routes it
+        // through the `?? default` fallback in the getter instead of being registered.
+        case .url: false
         case .array(let elementType): elementType.isPlistSafe
         case .dictionary(let keyType, let valueType): keyType.isPlistSafe && valueType.isPlistSafe
         case .optional(let wrappedType): wrappedType.isPlistSafe
         case .object: false
+        }
+    }
+
+    /// Whether the type needs a `coding:` strategy to be stored in UserDefaults.
+    ///
+    /// Distinct from `isPlistSafe`: `URL` isn't plist-safe (so it can't be `register`-ed) but
+    /// has a native `url(forKey:)` accessor, so it does *not* need Codable encoding.
+    var needsCoding: Bool {
+        switch self {
+        case .object: true
+        case .array(let elementType): elementType.needsCoding
+        case .dictionary(let keyType, let valueType): keyType.needsCoding || valueType.needsCoding
+        case .optional(let wrappedType): wrappedType.needsCoding
+        default: false
         }
     }
 

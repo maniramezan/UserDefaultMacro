@@ -38,7 +38,7 @@ jobs:
       run: swift --version
     
     - name: Check formatting
-      run: swift package lint-source-code --recursive .
+      run: swift-format lint --recursive Sources/ Tests/
 
     - name: Build code
       run: swift build -v -Xswiftc -warnings-as-errors

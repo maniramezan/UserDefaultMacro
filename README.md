@@ -323,21 +323,21 @@ If you have any idea to improve this repo, please feel free to fork and send a p
 
 #### Code Style
 
-This project uses Apple's official [swift-format](https://github.com/apple/swift-format) (integrated via SwiftPM plugin) to maintain consistent code formatting. The configuration is in `.swift-format` with the following key rules:
+This project uses Apple's official [swift-format](https://github.com/apple/swift-format) (bundled with the Swift toolchain) to maintain consistent code formatting. The configuration is in `.swift-format` with the following key rules:
 - Omit explicit `return` in single-expression functions
 - 120 character line width
 - 4-space indentation
 - Single-line property getters
 - Ordered imports
 
-**No external installation required** - swift-format is included as a package dependency.
+**No installation required** - `swift-format` is bundled with the Swift toolchain.
 
 ```bash
 # Format code
-swift package --allow-writing-to-package-directory format-source-code --recursive .
+swift-format format --recursive --in-place Sources/ Tests/
 
 # Check formatting (CI)
-swift package lint-source-code --recursive .
+swift-format lint --recursive Sources/ Tests/
 ```
 
 ### License

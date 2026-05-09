@@ -15,11 +15,11 @@ UserDefaultMacro is a Swift macro package that generates boilerplate code for `U
 ### Code Formatting
 
 ```bash
-# Format all Swift files (requires permission)
-swift package --allow-writing-to-package-directory format-source-code --recursive .
+# Format all Swift files (in-place)
+swift-format format --recursive --in-place Sources/ Tests/
 
 # Check formatting without making changes (for CI)
-swift package lint-source-code --recursive .
+swift-format lint --recursive Sources/ Tests/
 ```
 
 ### Build & Test
@@ -60,7 +60,7 @@ swift package clean
 
 ### Code Formatting
 
-This project uses Apple's **swift-format** (integrated via SwiftPM plugin) for consistent code style:
+This project uses Apple's **swift-format** (bundled with the Swift toolchain) for consistent code style:
 - Maximum line width: 120 characters (see `.swift-format`)
 - Omit explicit `return` in single-expression functions
 - 4-space indentation
@@ -73,12 +73,12 @@ Configuration is in `.swift-format` file (JSON format).
 1. Write it in compliance with the formatting rules from the start (preferred), OR
 2. After making changes, run the formatter before committing:
 ```bash
-swift package --allow-writing-to-package-directory format-source-code --recursive .
+swift-format format --recursive --in-place Sources/ Tests/
 ```
 
-**Never commit code that would fail** `swift package lint-source-code --recursive .`
+**Never commit code that would fail** `swift-format lint --recursive Sources/ Tests/`
 
-**No external installation required** - swift-format is included as a package dependency.
+**No installation required** - `swift-format` is bundled with the Swift toolchain.
 
 ## Package Structure
 
@@ -149,8 +149,8 @@ Total: 34 tests with 100% pass rate
 ## Swift Version Requirements
 
 - Requires Swift 6.2 (specified in Package.swift)
-- Uses swift-syntax from 602.0.0 (SPM semver range)
-- Uses swift-format from 602.0.0 (SPM semver range, matched to swift-syntax series)
+- Uses swift-syntax from 603.0.1 (SPM semver range)
+- Uses swift-format bundled with the Swift toolchain (no package dependency)
 - Supports macOS 10.15+, iOS 13+, tvOS 13+, watchOS 6+, macCatalyst 13+
 
 ## CI/CD
@@ -158,7 +158,7 @@ Total: 34 tests with 100% pass rate
 - Uses GitHub Actions with macOS-26 runner
 - Installs Swift 6.2 via Swiftly
 - Runs formatting checks, build, tests, and DocC generation on PRs to main branch
-- Uses swift-format plugin (no external tool installation required)
+- Uses swift-format bundled with the Swift toolchain for formatting checks
 
 ## Important Design Decisions
 

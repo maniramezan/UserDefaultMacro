@@ -16,5 +16,6 @@ struct AppSettings {
     @UserDefaultRecord(defaultValue: Theme.dark, coding: .plist)
     var theme: Theme
 
+    @UserDefaultRecord(coding: .plist)
     var optionalTheme: Theme?
 }

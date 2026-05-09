@@ -41,10 +41,10 @@ jobs:
       run: swift package lint-source-code --recursive .
 
     - name: Build code
-      run: swift build -v
+      run: swift build -v -Xswiftc -warnings-as-errors
 
     - name: Run tests
-      run: swift test --enable-swift-testing -v
+      run: swift test --enable-swift-testing -v -Xswiftc -warnings-as-errors
 
     - name: Detect DocC Changes
       id: docc_changes

@@ -1,5 +1,5 @@
 {
-  "originHash" : "ee48ed8a58449c0041bff37939de978aef004022e3e309a9462e797609ffd07f",
+  "originHash" : "6cd1ffdbf3bde7e36f2462a1ec388a8ae650a855bd7f6353a246f07b1bef15b5",
   "pins" : [
     {
       "identity" : "swift-docc-plugin",
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "9de99a78f099e59caf2b2beec65a4c45d54b2081",
         "version" : "603.0.1"
+      }
+    },
+    {
+      "identity" : "testcommonsmacrotesting",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/maniramezan/TestCommonsMacroTesting.git",
+      "state" : {
+        "revision" : "0430cbef9461718f610bd95080e10c7e76038963",
+        "version" : "0.1.0"
       }
     }
   ],

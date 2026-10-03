@@ -11,6 +11,7 @@ let package = Package(
         .executable(name: "UserDefaultClient", targets: ["UserDefaultClient"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/maniramezan/TestCommonsMacroTesting.git", from: "0.1.0"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "603.0.1"),
         .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.5.0"),
     ],
@@ -37,7 +38,8 @@ let package = Package(
         .testTarget(
             name: "UserDefaultTests",
             dependencies: [
-                "UserDefaultMacro", .product(name: "SwiftSyntaxMacroExpansion", package: "swift-syntax"),
+                "UserDefaultMacro", .product(name: "TestCommonsMacroTesting", package: "TestCommonsMacroTesting"),
+                .product(name: "SwiftSyntaxMacroExpansion", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacrosGenericTestSupport", package: "swift-syntax"),
             ]
         ),
